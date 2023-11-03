@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "867722950685",
+    "project_id": "todo-project-codesangam",
+    "storage_bucket": "todo-project-codesangam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867722950685:android:572b62c180c39ef701eef4",
+        "android_client_info": {
+          "package_name": "com.example.space_lab_tasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867722950685-d0fkeps79d2mcsvjtoltkmhrqltsdhm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHrfjBZCCDFW7ZumKKsEXdMmOqlVmsbCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "867722950685-d0fkeps79d2mcsvjtoltkmhrqltsdhm9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "867722950685-npvu9ptjjkp08h3dk6aro5q1at5uf7kf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.spaceLabTasks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
