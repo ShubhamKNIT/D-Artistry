@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "867722950685-9neihf0pkfdluafq5jtp42fhhatpso0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.space_lab_tasks",
+            "certificate_hash": "ae8b7f80ccab3290691314e0bf6c38b649c108ac"
+          }
+        },
+        {
           "client_id": "867722950685-d0fkeps79d2mcsvjtoltkmhrqltsdhm9.apps.googleusercontent.com",
           "client_type": 3
         }
