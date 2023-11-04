@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:space_lab_tasks/email_password_login_page.dart';
 
 class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
+  FirstPage({super.key});
 
   // For Google Sign-In
 
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final GoogleSignIn googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  // Future<User?> _handleSignInWithGoogle() async {
-  //   try {
-  //     final GoogleSignInAccount? googleSignInAccount =
-  //         await googleSignIn.signIn();
-  //     final GoogleSignInAuthentication? googleSignInAuthentication =
-  //         await googleSignInAccount?.authentication;
-  //     final AuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleSignInAuthentication?.accessToken,
-  //       idToken: googleSignInAuthentication?.idToken,
-  //     );
-  //     final UserCredential authResult =
-  //         await _auth.signInWithCredential(credential);
-  //     final User? user = authResult.user;
-  //     return user;
-  //   } catch (error) {
-  //     print(error.toString());
-  //     return null;
-  //   }
-  // }
+  Future<User?> _handleSignInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleSignInAuthentication =
+          await googleSignInAccount?.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication?.accessToken,
+        idToken: googleSignInAuthentication?.idToken,
+      );
+      final UserCredential authResult =
+          await _auth.signInWithCredential(credential);
+      final User? user = authResult.user;
+      return user;
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +69,17 @@ class FirstPage extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Google Sign-In Button
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     final User? user = await _handleSignInWithGoogle();
-              //     if (user != null) {
-              //       // Navigate to the next screen after successful login.
-              //     }
-              //   },
-              //   child: const Text('Sign in with Google'),
-              // ),
+              ElevatedButton(
+                onPressed: () async {
+                  final User? user = await _handleSignInWithGoogle();
+                  if (user != null) {
+                    // Navigate to the next screen after successful login.
+                  }
+                },
+                child: const Text('Sign in with Google'),
+              ),
+
+              const SizedBox(height: 16),
 
               // Email/Password Sign-In Button
               ElevatedButton(

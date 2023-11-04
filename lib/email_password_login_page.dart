@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -5,10 +6,10 @@ class EmailPasswordLoginPage extends StatefulWidget {
   const EmailPasswordLoginPage({super.key});
 
   @override
-  _EmailPasswordLoginPageState createState() => _EmailPasswordLoginPageState();
+  EmailPasswordLoginPageState createState() => EmailPasswordLoginPageState();
 }
 
-class _EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
+class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -22,7 +23,9 @@ class _EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
 
       // Navigate to the next screen after successful login.
     } catch (error) {
-      print(error.toString());
+      if (kDebugMode) {
+        print(error.toString());
+      }
     }
   }
 
