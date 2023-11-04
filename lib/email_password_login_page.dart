@@ -48,11 +48,12 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
               ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   _handleEmailSignIn();
                 },
-                child: const Text('Sign in with Email/Password'),
+                child: const Text('Sign In'),
               ),
             ],
           ),

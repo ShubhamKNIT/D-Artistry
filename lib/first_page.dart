@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,7 +27,9 @@ class FirstPage extends StatelessWidget {
       final User? user = authResult.user;
       return user;
     } catch (error) {
-      print(error.toString());
+        if (kDebugMode) {
+          print(error);
+        } 
       return null;
     }
   }
@@ -68,6 +71,41 @@ class FirstPage extends StatelessWidget {
               ),
               const SizedBox(height: 32),
 
+              // Email/Password Sign-In Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EmailPasswordLoginPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Sign In'),
+                  ),
+ 
+ 
+                  // Sign-Up Button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          // build and change function for signup page
+                          builder: (context) => const EmailPasswordLoginPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Sign Up'),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 32),
+
               // Google Sign-In Button
               ElevatedButton(
                 onPressed: () async {
@@ -79,20 +117,6 @@ class FirstPage extends StatelessWidget {
                 child: const Text('Sign in with Google'),
               ),
 
-              const SizedBox(height: 16),
-
-              // Email/Password Sign-In Button
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EmailPasswordLoginPage(),
-                    ),
-                  );
-                },
-                child: const Text('Sign in with Email/Password'),
-              ),
             ],
           ),
         ),
