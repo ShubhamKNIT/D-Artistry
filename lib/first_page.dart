@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:space_lab_tasks/dashboard_page.dart';
 import 'package:space_lab_tasks/email_password_login_page.dart';
 
 class FirstPage extends StatelessWidget {
@@ -50,7 +51,9 @@ class FirstPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
+
               const SizedBox(height: 16),
+              
               const Text(
                   '1. Store notes and tasks with titles and descriptions.'),
               const Text('2. Schedule reminders for your tasks and notes.'),
@@ -61,10 +64,7 @@ class FirstPage extends StatelessWidget {
               const Text(
                   '7. Automatically detect and set reminders in your notes.'),
               const SizedBox(height: 16),
-              // const Text(
-              //   'Get started by signing in with your Google account:',
-              //   style: TextStyle(fontSize: 16),
-              // ),
+  
               const Text(
                 'Get started with your To-Do App:',
                 style: TextStyle(fontSize: 16),
@@ -87,11 +87,10 @@ class FirstPage extends StatelessWidget {
                     child: const Text('Sign In'),
                   ),
  
- 
                   // Sign-Up Button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           // build and change function for signup page
@@ -112,11 +111,35 @@ class FirstPage extends StatelessWidget {
                   final User? user = await _handleSignInWithGoogle();
                   if (user != null) {
                     // Navigate to the next screen after successful login.
+
+                    // ignore: use_build_context_synchronously 
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DashboardPage(),
+                      ),
+                    );
                   }
                 },
                 child: const Text('Sign in with Google'),
               ),
 
+              const SizedBox(height: 32),
+
+              // temp button for making other pages
+              // will delete this button when not required
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DashboardPage(),
+                    ),
+                  );
+                },
+                child: const Text('Temp Button'),
+              ),
             ],
           ),
         ),
