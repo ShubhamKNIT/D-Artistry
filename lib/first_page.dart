@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:space_lab_tasks/dashboard_page.dart';
 import 'package:space_lab_tasks/email_password_login_page.dart';
+import 'package:space_lab_tasks/signup_page.dart';
 
 class FirstPage extends StatelessWidget {
   FirstPage({super.key});
@@ -90,11 +91,11 @@ class FirstPage extends StatelessWidget {
                   // Sign-Up Button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           // build and change function for signup page
-                          builder: (context) => const EmailPasswordLoginPage(),
+                          builder: (context) => const SignUpPage(),
                         ),
                       );
                     },
