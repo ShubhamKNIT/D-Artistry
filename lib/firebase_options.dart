@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,38 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA35vSaUYRi6-uU3rV5iXkd_9PznuBaJcw',
-    appId: '1:867722950685:web:763dffc95d404d0901eef4',
-    messagingSenderId: '867722950685',
-    projectId: 'todo-project-codesangam',
-    authDomain: 'todo-project-codesangam.firebaseapp.com',
-    storageBucket: 'todo-project-codesangam.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDHrfjBZCCDFW7ZumKKsEXdMmOqlVmsbCE',
-    appId: '1:867722950685:android:572b62c180c39ef701eef4',
-    messagingSenderId: '867722950685',
-    projectId: 'todo-project-codesangam',
-    storageBucket: 'todo-project-codesangam.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBFsl637GAON6za_q-4xufkOZU7Bh4K88s',
-    appId: '1:867722950685:ios:25a0b177f7e4953501eef4',
-    messagingSenderId: '867722950685',
-    projectId: 'todo-project-codesangam',
-    storageBucket: 'todo-project-codesangam.appspot.com',
-    iosBundleId: 'com.example.spaceLabTasks',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBFsl637GAON6za_q-4xufkOZU7Bh4K88s',
-    appId: '1:867722950685:ios:be3ba60cbbea420701eef4',
-    messagingSenderId: '867722950685',
-    projectId: 'todo-project-codesangam',
-    storageBucket: 'todo-project-codesangam.appspot.com',
-    iosBundleId: 'com.example.spaceLabTasks.RunnerTests',
+    apiKey: 'AIzaSyD-LWlLsyumL3WShj3OzzzxiuQ2e8ZZlUE',
+    appId: '1:1076359893187:android:8698ce98adf2d55079d276',
+    messagingSenderId: '1076359893187',
+    projectId: 'codesangam-todo-project',
+    storageBucket: 'codesangam-todo-project.appspot.com',
   );
 }
