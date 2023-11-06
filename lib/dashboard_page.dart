@@ -44,8 +44,12 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: _selectedItem == 0
+          ? const TodoListPage() // Display TodoListPage when "Home" is selected
+          : _pages.elementAt(_selectedItem),
+
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('Space Lab Tasks'),
         actions: <Widget>[
           IconButton(
             onPressed: () {
@@ -54,14 +58,6 @@ class _DashboardPageState extends State<DashboardPage> {
             icon: const Icon(Icons.logout),
           )
         ],
-      ),
-
-      body: _pages.elementAt(_selectedItem),
-
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.orange,
-        child: const Icon(Icons.add),
-        onPressed: () {}, // Replace with AddTaskPage() route (TBD)
       ),
 
       // Bottom Navigation Bar with 3 items (Home, Task Analytics, Profile)
