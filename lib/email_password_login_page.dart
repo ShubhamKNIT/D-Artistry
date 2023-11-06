@@ -28,7 +28,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const DashboardPage(), // Replace with your dashboard page
+          builder: (context) => const DashboardPage(), 
         ),
       );
     } catch (error) {
