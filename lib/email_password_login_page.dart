@@ -20,7 +20,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
       final String email = _emailController.text;
       final String password = _passwordController.text;
 
-      await _auth.setPersistence(Persistence.LOCAL); // Set local persistence
+      // await _auth.setPersistence(Persistence.LOCAL); // Set local persistence
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       // Navigate to the dashboard page after successful login.
