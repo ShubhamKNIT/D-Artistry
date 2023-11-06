@@ -1,5 +1,6 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "firebase_options.dart";
 
@@ -111,7 +112,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   email: email, 
                   password: password
                 );
-                print(userCredential.user);  
+
+                // Add method to navigate to dashboard page
+
+                if (kDebugMode) {
+                  print(userCredential.user);
+                }  
               },
               child: const Text('Sign Up'),
             ),
