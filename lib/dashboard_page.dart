@@ -16,11 +16,13 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text('Dashboard'),
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
         child: const Icon(Icons.add),
         onPressed: () {},
       ),
+
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         color: Colors.blue,
@@ -28,7 +30,9 @@ class _DashboardPageState extends State<DashboardPage> {
           height: 50.0,
         ),
       ),
+
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
