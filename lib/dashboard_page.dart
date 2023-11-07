@@ -49,7 +49,9 @@ class _DashboardPageState extends State<DashboardPage> {
           : _pages.elementAt(_selectedItem),
 
       appBar: AppBar(
+        automaticallyImplyLeading: false, // back button removed
         title: const Text('Space Lab Tasks'),
+
         actions: <Widget>[
           IconButton(
             onPressed: () {
