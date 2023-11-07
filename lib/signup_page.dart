@@ -1,5 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
+import "package:space_lab_tasks/email_password_login_page.dart";
+import "package:space_lab_tasks/first_page.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "firebase_options.dart";
@@ -52,6 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Sign Up'),
       ),
       body: Center(
@@ -94,32 +97,115 @@ class _SignUpPageState extends State<SignUpPage> {
                 hintText: 'Confirm Password',
               )
             ),
-            TextButton(
-              onPressed: () async {
-                await Firebase.initializeApp(
-                  options: DefaultFirebaseOptions.currentPlatform,
-                );
+            Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                TextButton(
+                  onPressed: () async {
 
-                // final firstname = _firstname.text;
-                // final lastname = _lastname.text;
-                final email = _email.text;
-                final password = _password.text;
-                final confirmPassword = _confirmPassword.text;
-                if (password != confirmPassword) {
-                  throw Exception("Passwords do not match");
+                  try { await Firebase.initializeApp(
+                      options: DefaultFirebaseOptions.currentPlatform,
+                    );
+
+                    // final firstname = _firstname.text;
+                    // final lastname = _lastname.text;
+                    final email = _email.text;
+                    final password = _password.text;
+                    final confirmPassword = _confirmPassword.text;
+                  if (email == "" || password == "" || confirmPassword == "") {
+                    showDialog<String>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Empty fields'),
+                        content: const Text('Please ensure to eneter all the details.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  else if (password != confirmPassword) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Password Error'),
+                        content: const Text('Password do not match. Please retype the password.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    } else {
+                      // Attempt to create a user
+                      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email, 
+                      password: password
+                    );
+
+                    // Add code to navigate to the dashboard page on success
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EmailPasswordLoginPage(),
+                      ),
+                    );
+
+                    if (kDebugMode) {
+                      print(userCredential.user);
+                    }
+                  }
+                } catch (err) {
+                  showDialog<String>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('User already exists'),
+                      content: const Text('Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
+                      actions: <Widget>[
+                        Row(
+                          textDirection: TextDirection.rtl,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const EmailPasswordLoginPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Sign In'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
                 }
-                final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                  email: email, 
-                  password: password
-                );
-
-                // Add method to navigate to dashboard page
-
-                if (kDebugMode) {
-                  print(userCredential.user);
-                }  
-              },
-              child: const Text('Sign Up'),
+          },
+                child: const Text('Sign Up'),
+          ),
+          TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FirstPage(),
+                    ),
+                  );
+                },
+                child: const Text('Cancel'),
+          ),
+              ],
             ),
           ],
         ),
