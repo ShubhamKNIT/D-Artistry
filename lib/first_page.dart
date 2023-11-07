@@ -109,6 +109,9 @@ class FirstPage extends StatelessWidget {
               // Google Sign-In Button
               ElevatedButton(
                 onPressed: () async {
+                  // Signout and clear any cached credentials
+                  await googleSignIn.signOut();
+
                   final User? user = await _handleSignInWithGoogle();
                   if (user != null) {
                     // Navigate to the next screen after successful login.
