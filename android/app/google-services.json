@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "1076359893187-jre7ogsh6jqmfoph43g9pl7pcecarsnd.apps.googleusercontent.com",
+          "client_id": "1076359893187-ldapegoogdq4dg6q7vtpq140fjrpfg3l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.space_lab_tasks",
-            "certificate_hash": "0776cf7734dbb2b44e7aa4b6ea14d715e23b30c2"
+            "certificate_hash": "061836bc311a756143e3a7c9b19fea2ab19e9ab2"
+          }
+        },
+        {
+          "client_id": "1076359893187-rihi75ia6ptb561eb03gpa7r9dbtpgbs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.space_lab_tasks",
+            "certificate_hash": "6ce40a95fe46512fcc1ecca0c845cdddd51978d2"
           }
         },
         {
