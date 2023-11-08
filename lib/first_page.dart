@@ -127,23 +127,6 @@ class FirstPage extends StatelessWidget {
                 },
                 child: const Text('Sign in with Google'),
               ),
-
-              const SizedBox(height: 32),
-
-              // temp button for making other pages
-              // will delete this button when not required
-
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DashboardPage(),
-                    ),
-                  );
-                },
-                child: const Text('Temp Button'),
-              ),
             ],
           ),
         ),
