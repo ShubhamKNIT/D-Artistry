@@ -39,6 +39,9 @@ dependencies:
   firebase_auth: ^4.12.1
   google_sign_in: ^6.1.5
   flutter_colorpicker: ^1.0.3
+  audioplayers: ^5.2.0
+  file_picker: ^6.1.1
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
