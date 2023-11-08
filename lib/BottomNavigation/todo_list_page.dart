@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:space_lab_tasks/BottomNavigation/add_task_page_button.dart';
 
@@ -48,6 +50,8 @@ class Task {
   String note;
   bool isImportant;
   Color taskColor;
+  File? image;
+  File? audio;
 
   Task({
     required this.title,
@@ -56,6 +60,8 @@ class Task {
     this.note = '',
     this.isImportant = false,
     this.taskColor = Colors.blue, // Default color
+    this.image,
+    this.audio,
   });
 }
 

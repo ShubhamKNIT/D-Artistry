@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:space_lab_tasks/BottomNavigation/todo_list_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -19,6 +23,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
   bool isImportant = false;
   String note = '';
   Color taskColor = Colors.blue; // Default color and will be changed by user
+  File? imageFile;
+  File? audioFile;
 
   // Adding task
   void addTask() {
@@ -29,12 +35,39 @@ class _AddTaskPageState extends State<AddTaskPage> {
       isImportant: isImportant,
       note: note,
       taskColor: taskColor,
+      image: imageFile,
+      audio: audioFile,
     );
 
     // Add new task to list of tasks
     todoItems.add(newTask);
 
     Navigator.pop(context); // Return to previous page (TodoListPage)
+  }
+
+  // Select image from gallery
+  Future<void> _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  // Select audio from gallery
+  Future<void> _pickAudio() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      setState(() {
+        audioFile = File(result.files.single.path!);
+      });
+    }
   }
 
   @override
@@ -160,6 +193,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   },
                 );
               },
+            ),
+
+            ListTile(
+              title: Text('Attach Image'),
+              trailing: IconButton(
+                icon: const Icon(Icons.camera_alt),
+                onPressed: _pickImage,
+              ),
+            ),
+            
+            ListTile(
+              title: Text('Attach Audio'),
+              trailing: IconButton(
+                icon: const Icon(Icons.audiotrack),
+                onPressed: _pickAudio,
+              ),
             ),
 
             // Add Task Button
