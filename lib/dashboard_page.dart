@@ -43,44 +43,49 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _selectedItem == 0
-          ? const TodoListPage() // Display TodoListPage when "Home" is selected
-          : _pages.elementAt(_selectedItem),
+    return WillPopScope(
+      child: Scaffold(
+        body: _selectedItem == 0
+            ? const TodoListPage() // Display TodoListPage when "Home" is selected
+            : _pages.elementAt(_selectedItem),
 
-      appBar: AppBar(
-        automaticallyImplyLeading: false, // back button removed
-        title: const Text('Space Lab Tasks'),
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // back button removed
+          title: const Text('Space Lab Tasks'),
 
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              _signout();
-            },
-            icon: const Icon(Icons.logout),
-          )
-        ],
-      ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                _signout();
+              },
+              icon: const Icon(Icons.logout),
+            )
+          ],
+        ),
 
-      // Bottom Navigation Bar with 3 items (Home, Task Analytics, Profile)
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Task Analytics',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedItem,
-        onTap: _onItemTapped,
-      ),
+        // Bottom Navigation Bar with 3 items (Home, Task Analytics, Profile)
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.analytics),
+              label: 'Task Analytics',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedItem,
+          onTap: _onItemTapped,
+        ),
+      ), 
+      onWillPop: () async { // Disable back button
+        return false;
+      }
     );
   }
 }
