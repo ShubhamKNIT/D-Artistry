@@ -1,9 +1,12 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
+import "package:space_lab_tasks/alert_dialog.dart";
+import "package:space_lab_tasks/auth_test.dart";
 import "package:space_lab_tasks/email_password_login_page.dart";
 import "package:space_lab_tasks/first_page.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:space_lab_tasks/verify_email.dart";
 import "firebase_options.dart";
 
 class SignUpPage extends StatefulWidget {
@@ -24,8 +27,8 @@ class _SignUpPageState extends State<SignUpPage> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final TextEditingController _confirmPassword;
-
-
+  bool _isPasswordVisible = false; // to change password visibility
+  bool _isLoading = false; // to show loading indicator
 
   // create a function to initialize the state of the text controllers
   @override
@@ -49,167 +52,269 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  // build the widget
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Sign Up'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            // TextField(
-            //   controller: _firstname,
-            //   decoration: const InputDecoration(
-            //     hintText: 'First Name',
-            //   )
-            // ),
-            // TextField(
-            //   controller: _lastname,
-            //   decoration: const InputDecoration(
-            //     hintText: 'Last Name',
-            //   )
-            // ),
-            TextField(
-              controller: _email,
-              keyboardType: TextInputType.emailAddress, // @symbol for email in keyboard
-              decoration: const InputDecoration(
-                hintText: 'Email',
-              )
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true, // hide the password
-              enableSuggestions: false, // disable suggestions
-              autocorrect: false, // disable autocorrect
-              decoration: const InputDecoration(
-                hintText: 'Password',
-              )
-            ),
-            TextField(
-              controller: _confirmPassword,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                hintText: 'Confirm Password',
-              )
-            ),
+
+  Future<void> _handleSignUp() async {
+    try { 
+
+      setState(() { // show loading indicator // it starts after clicking signup button
+        _isLoading = true; 
+      });
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+      // final firstname = _firstname.text;
+      // final lastname = _lastname.text;
+      if (_email.text == "" || _password.text == "" || _confirmPassword.text == "") {
+      // check any of the required fields are empty
+        showErrorDialog(context, "Please make sure to enter all the required fields." , "Try Again", 'OK', 'Cancel');
+      } 
+      else {
+        // Attempt to create a user
+        final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _email.text, 
+        password: _password.text,
+      );
+
+
+      // using scaffoldmessanger to show successful signup message to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sign Up Successful'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+
+      await Future.delayed(Duration(seconds: 2)); // delays navigation to login page by 5 seconds
+      // holding page to display successful signup message to user
+
+      // Navigate to verify email page
+      if (userCredential.user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyEmail(),
+          ),
+        );
+      } else {
+        // show error dialog
+        showErrorDialog(context, "Sign Up Failed. Please try again.", "Try Again", 'OK', 'Cancel');
+      }
+
+      if (kDebugMode) {
+        print(userCredential.user);
+      }
+    }
+    } 
+    catch (err) {
+      showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('User already exists'),
+          content: const Text('Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
+          actions: <Widget>[
             Row(
               textDirection: TextDirection.rtl,
               children: [
                 TextButton(
-                  onPressed: () async {
-
-                  try { await Firebase.initializeApp(
-                      options: DefaultFirebaseOptions.currentPlatform,
-                    );
-
-                    // final firstname = _firstname.text;
-                    // final lastname = _lastname.text;
-                    final email = _email.text;
-                    final password = _password.text;
-                    final confirmPassword = _confirmPassword.text;
-                  if (email == "" || password == "" || confirmPassword == "") {
-                    showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Empty fields'),
-                        content: const Text('Please ensure to eneter all the details.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  else if (password != confirmPassword) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Password Error'),
-                        content: const Text('Password do not match. Please retype the password.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                    } else {
-                      // Attempt to create a user
-                      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email, 
-                      password: password
-                    );
-
-                    // Add code to navigate to the dashboard page on success
-                    Navigator.pushReplacement(
+                  onPressed: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const EmailPasswordLoginPage(),
                       ),
                     );
-
-                    if (kDebugMode) {
-                      print(userCredential.user);
-                    }
-                  }
-                } catch (err) {
-                  showDialog<String>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('User already exists'),
-                      content: const Text('Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
-                      actions: <Widget>[
-                        Row(
-                          textDirection: TextDirection.rtl,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const EmailPasswordLoginPage(),
-                                  ),
-                                );
-                              },
-                              child: const Text('Sign In'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }
-          },
-                child: const Text('Sign Up'),
-          ),
-          TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FirstPage(),
-                    ),
-                  );
-                },
-                child: const Text('Cancel'),
-          ),
+                  },
+                  child: const Text('Sign In'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
               ],
             ),
           ],
         ),
-      ),
+      );
+    } 
+    finally {
+      setState(() {
+        _isLoading = false; // hide loading indicator
+      });
+    }
+  }
+
+  // build the widget
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // TextField(
+              //   controller: _firstname,
+              //   decoration: const InputDecoration(
+              //     hintText: 'First Name',
+              //   )
+              // ),
+              // TextField(
+              //   controller: _lastname,
+              //   decoration: const InputDecoration(
+              //     hintText: 'Last Name',
+              //   )
+              // ),
+
+              // email container
+              Text(
+                'Welcome! to sign up page.',
+                style: TextStyle(fontSize: 15),
+              ),
+
+              SizedBox(height: 25),
+
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress, // @symbol for email in keyboard
+                  validator: (value) {
+                    if (checkValidEmail(value!)) {
+                      return null;
+                    }
+                    else {
+                      return 'Please enter a valid email address';
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    icon: Icon(Icons.email),
+                    border: InputBorder.none,
+                  )
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              // password container
+              Container( 
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _password,
+                  obscureText: !_isPasswordVisible, // hide the password (we can also use obscureText: true, but visibilty does not change)
+                  enableSuggestions: false, // disable suggestions
+                  autocorrect: false, // disable autocorrect
+                  validator: (value) {
+                    if (checkValidPassword(value!)) {
+                      return null;
+                    }
+                    else {
+                      return 'Your password must be longer than 8 characters and also \ncontains oneuppercase, one lowercase, one number and \none special character.';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    icon: Icon(Icons.lock),
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  )
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              // confirm password container
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _confirmPassword,
+                  obscureText: !_isPasswordVisible, // to hide the password
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  validator: (value) {
+                    if (_password.text == _confirmPassword.text) {
+                      return null;
+                    } else {
+                      return 'Your password do not match. Please retype the password.';
+                    }
+                  },
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.lock),
+                    hintText: 'Confirm Password',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton( // change visibility of password
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                textDirection: TextDirection.rtl,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _handleSignUp();
+                    },
+                    child: const Text('Sign Up'),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FirstPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              if (_isLoading)
+                const CircularProgressIndicator(),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
