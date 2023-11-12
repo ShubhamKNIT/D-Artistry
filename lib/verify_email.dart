@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:space_lab_tasks/email_password_login_page.dart';
+import 'package:space_lab_tasks/dashboard_page.dart';
 import 'package:flutter/material.dart';
 
 class VerifyEmail extends StatefulWidget {
@@ -112,7 +112,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => EmailPasswordLoginPage()
+                      builder: (_) => DashboardPage()
                     ),  
                   );
                 },
