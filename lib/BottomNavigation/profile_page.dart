@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      
       body: Center(
-        child: Text(
-          'Profile Page',
-          style: TextStyle(fontSize: 20),
-        ),
+        child: user != null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('User ID: ${user!.uid}'),
+                  Text('Email: ${user!.email}'),
+                ],
+              )
+            : CircularProgressIndicator(),
       ),
     );
   }

@@ -1,9 +1,13 @@
+
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:space_lab_tasks/BottomNavigation/todo_list_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:space_lab_tasks/Database/database_provider.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -25,23 +29,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
   File? imageFile;
   File? audioFile;
 
-  // Adding task
-  void addTask() {
-    Task newTask = Task(
-      title: taskNameController.text,
-      dueDate: dueDate,
-      reminderTime: reminderTime,
-      isImportant: isImportant,
-      note: note,
-      taskColor: taskColor,
-      image: imageFile,
-      audio: audioFile,
-    );
+  void addTask() async {
+    // // Convert image and audio files to bytes
+    // Uint8List imageBytes = imageFile != null ? await imageFile!.readAsBytes() : Uint8List(0);
+    // Uint8List audioBytes = audioFile != null ? await audioFile!.readAsBytes() : Uint8List(0);
 
-    // Add new task to list of tasks
-    todoItems.add(newTask);
+    // Task newTask = Task(
+    //   taskName: taskNameController.text,
+    //   dueDate: dueDate.toIso8601String(),
+    //   reminderTime: reminderTime.format(context),
+    //   isImportant: isImportant,
+    //   note: note,
+    //   image: imageBytes,
+    //   audio: audioBytes, 
+    //   color: taskColor.toString(),
+    //   isCompleted: false,
+    // );
 
-    Navigator.pop(context); // Return to previous page (TodoListPage)
+    // // Insert the task into the database
+    // await DatabaseProvider.insertTask(newTask);
+
+    // Close this screen and return to the previous TodoListPage
+    Navigator.pop(context);
   }
 
   // Select image from gallery

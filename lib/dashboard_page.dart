@@ -18,7 +18,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final List<Widget> _pages = <Widget>[
     const TodoListPage(),
     const TaskAnalyticsPage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

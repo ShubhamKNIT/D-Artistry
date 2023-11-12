@@ -1,7 +1,8 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 import 'package:space_lab_tasks/BottomNavigation/add_task_page_button.dart';
+import 'package:space_lab_tasks/Database/database_provider.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -11,6 +12,23 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
+  // List of Tasks
+  List<Task> todoItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTasks();
+  }
+
+  void fetchTasks() async {
+    // Fetch tasks for the current user
+    final tasks = await DatabaseProvider.getTasksByUserId(/*get user id*/ 1);
+    setState(() {
+      todoItems = tasks;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -20,7 +38,7 @@ class _TodoListPageState extends State<TodoListPage> {
         itemBuilder: (context, index) {
           final todo = todoItems[index];
           return ListTile(
-            title: Text(todo.title),
+            title: Text(todo.taskName),
             // Add more details like checkboxes, due dates, etc.
           );
         },
@@ -41,29 +59,3 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 }
 
-
-// Task Model
-class Task {
-  String title;
-  DateTime dueDate;
-  TimeOfDay reminderTime;
-  String note;
-  bool isImportant;
-  Color taskColor;
-  File? image;
-  File? audio;
-
-  Task({
-    required this.title,
-    required this.dueDate,
-    required this.reminderTime,
-    this.note = '',
-    this.isImportant = false,
-    this.taskColor = Colors.blue, // Default color
-    this.image,
-    this.audio,
-  });
-}
-
-// List of Tasks
-List<Task> todoItems = [];
