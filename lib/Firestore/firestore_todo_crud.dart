@@ -86,18 +86,13 @@ class FirestoreTodoCRUD {
       'note': note,
       'isImportant': isImportant,
       'taskColor': taskColor.value,
-      'image': imageUrl,
-      'audio': audioUrl,
+      'image': imageUrl.isNotEmpty ? imageUrl : null,
+      'audio': audioUrl.isNotEmpty ? audioUrl : null,
       'completed': false,
       'timestamp': FieldValue.serverTimestamp(), // https://firebase.flutter.dev/docs/firestore/usage/#timestamps
     }).whenComplete(() {  
       print('Task added');
       print(DateTime.now());
-      Scaffold(
-        body: const Center(
-          child: Text('New task added!!'),
-        )
-      );
     }
     ).catchError((e) {
         throw Exception('Error adding task: $e');
@@ -119,15 +114,53 @@ class FirestoreTodoCRUD {
   // update task
   Future<void> updateTask(
     String docId,
-    Map<String, dynamic> updatedFields,
+    String title,
+    DateTime dueDate,
+    TimeOfDay reminderTime,
+    String note,
+    bool isImportant,
+    Color taskColor,
+    File? image,
+    File? audio
   ) async {
-    try {
-      await db.doc(docId).update(updatedFields);
-      print('Task updated: $docId');
-      print(DateTime.now());
-    } catch (e) {
-      print('Error updating task: $e');
+    
+    DocumentReference docRef = db.doc(docId);
+
+
+    // Format TimeOfDay to String
+    String reminderTimeAsString = '${reminderTime.hour}:${reminderTime.minute}';
+
+    // upload audio and image to Firebase Storage if available
+    String imageUrl = '';
+    String audioUrl = '';
+
+    if (image != null) {
+      imageUrl = await uploadAudioImageToFirebase(image, true);
     }
+
+    if (audio != null) {
+      audioUrl = await uploadAudioImageToFirebase(audio, false);
+    }
+
+    await docRef.update({
+      'title': title,
+      'dueDate': dueDate,
+      'reminderTime': reminderTimeAsString,
+      'note': note,
+      'isImportant': isImportant,
+      'taskColor': taskColor.value,
+      'image': imageUrl.isNotEmpty ? imageUrl : null,
+      'audio': audioUrl.isNotEmpty ? audioUrl : null,
+      'completed': false,
+    }).whenComplete(
+      () {  
+        print('Task updated: $docId');
+        print(DateTime.now());
+      }
+    ).catchError((e) {
+      print(e);
+    });
+
   }
 
 
@@ -136,16 +169,10 @@ class FirestoreTodoCRUD {
     await db.doc(docId).delete().whenComplete(() {  
       print('Task deleted: $docId');
       print(DateTime.now());
-      Scaffold(
-        body: const Center(
-          child: Text('Task deleted'),
-        )
-      );
     }
     ).catchError((e) {
       print(e);
     });
   }
-
 
 }   
