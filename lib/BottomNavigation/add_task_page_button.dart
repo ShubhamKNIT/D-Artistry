@@ -4,26 +4,50 @@ import 'package:space_lab_tasks/BottomNavigation/todo_list_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:space_lab_tasks/Firestore/firestore_todo_crud.dart';
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+  final Task? task;
+
+  AddTaskPage({Key? key, this.task}) : super(key: key);
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  TextEditingController taskNameController =
-      TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
-  DateTime dueDate = DateTime
-      .now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
-  TimeOfDay reminderTime = TimeOfDay
-      .now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
+
+  // get instance of FirestoreTodoCRUD class
+  final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
+
+
+  TextEditingController taskNameController = TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
+  DateTime dueDate = DateTime.now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
+  TimeOfDay reminderTime = TimeOfDay.now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
   bool isImportant = false;
   String note = '';
   Color taskColor = Colors.blue; // Default color and will be changed by user
   File? imageFile;
   File? audioFile;
+  String? docID;
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.task != null) {
+      // If task is not null, then update the page
+      docID = widget.task!.docID;
+      taskNameController.text = widget.task!.title;
+      dueDate = widget.task!.dueDate;
+      reminderTime = widget.task!.reminderTime;
+      isImportant = widget.task!.isImportant;
+      note = widget.task!.note;
+      taskColor = widget.task!.taskColor;
+      imageFile = widget.task!.image;
+      audioFile = widget.task!.audio;
+    }
+  }
 
   // Adding task
   void addTask() {
@@ -44,13 +68,33 @@ class _AddTaskPageState extends State<AddTaskPage> {
     Navigator.pop(context); // Return to previous page (TodoListPage)
   }
 
+  // Updating task
+    Future<void> updateTask(String docID) async {
+      // Update only the fields that need to be changed
+      Map<String, dynamic> updatedFields = {
+        'title': taskNameController.text,
+        'dueDate': dueDate,
+        'reminderTime': reminderTime.format(context),
+        'note': note,
+        'isImportant': isImportant,
+        'taskColor': taskColor.value,
+        'image': imageFile != null ? await FirestoreTodoCRUD.uploadAudioImageToFirebase(imageFile!, true) : null,
+        'audio': audioFile != null ? await FirestoreTodoCRUD.uploadAudioImageToFirebase(audioFile!, false) : null,
+      };
+
+      await firestoreTodoCRUD.updateTask(docID, updatedFields);
+
+      Navigator.pop(context);
+    }
+
+
   // Select image from gallery
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        imageFile = File(pickedFile.path);
+        imageFile = File(pickedFile.path); // store image file uri
       });
     }
   }
@@ -64,7 +108,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     if (result != null) {
       setState(() {
-        audioFile = File(result.files.single.path!);
+        audioFile = File(result.files.single.path!); // store audio file uri
       });
     }
   }
@@ -194,6 +238,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
               },
             ),
 
+
+            // attach image
             ListTile(
               title: Text('Attach Image'),
               trailing: IconButton(
@@ -202,6 +248,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
             
+            // attach audio
             ListTile(
               title: Text('Attach Audio'),
               trailing: IconButton(
@@ -211,11 +258,36 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ),
 
             // Add Task Button
+            // Update Task Button
             ElevatedButton(
               onPressed: () {
-                addTask();
+                if (widget.task == null) {
+                    addTask();  
+                    // add task to firestore
+                    firestoreTodoCRUD.addTask(
+                      taskNameController.text,
+                      dueDate,
+                      reminderTime,
+                      note,
+                      isImportant,
+                      taskColor,
+                      imageFile,
+                      audioFile,
+                    );
+                    taskNameController.clear();
+                }
+                else {
+                  // update task in firestore
+                  if (docID != null) {
+                    updateTask(docID!);
+                  }
+                  else {
+                    print('docID is null');
+                    throw Exception('docID is null');
+                  }
+                }
               },
-              child: const Text('Add Task'),
+              child: widget.task == null ? const Text('Add Task') : const Text('Update Task'),
             ),
           ],
         ),
