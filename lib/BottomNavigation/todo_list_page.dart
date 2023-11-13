@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:space_lab_tasks/BottomNavigation/add_task_page_button.dart';
+import 'package:space_lab_tasks/BottomNavigation/update_task_page.dart';
 import 'package:space_lab_tasks/Firestore/firestore_todo_crud.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -98,25 +99,52 @@ class _TodoListPageState extends State<TodoListPage> {
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      isImportant = !isImportant;
+                                      firestoreTodoCRUD.updateTask(task.id, title, dueDate, reminderTime, note, !isImportant, taskColor, null, null);
                                     });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Marked as important!'),
+                                        duration: Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
                                   },
                                   icon: isImportant ? const Icon(Icons.star) : const Icon(Icons.star_border),
                                 ),
+                                // to update task
                               IconButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AddTaskPage(),
+                                        builder: (context) => UpdateTaskPage(
+                                          docID: task.id,
+                                          task: Task(
+                                            title: title,
+                                            dueDate: dueDate,
+                                            reminderTime: reminderTime,
+                                            note: note,
+                                            isImportant: isImportant,
+                                            taskColor: taskColor,
+                                            // image: imageUri != null ? File(imageUri) : null,
+                                            // audio: audioUri != null ? File(audioUri) : null,
+                                          )
                                         ),
-                                      );
+                                      ),
+                                    );
                                   },
                                   icon: Icon(Icons.edit),
                                 ),
                                 IconButton(
                                   onPressed: () {
                                     firestoreTodoCRUD.deleteTask(task.id);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Task deleted successfully!'),
+                                        duration: Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
                                   }, 
                                   icon: Icon(Icons.delete), 
                                 ),

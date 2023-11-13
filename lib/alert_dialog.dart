@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 Future<void> showErrorDialog(
   
   BuildContext context, 
-  String text,
-  String errorType,
-  String opt_1,
-  String opt_2,
+  String text,  // content
+  String errorType, // title
+  String opt_1, // button 1
+  String opt_2, // button 2
 ) {
     return showDialog(context: context, builder: (context) {
       return AlertDialog(

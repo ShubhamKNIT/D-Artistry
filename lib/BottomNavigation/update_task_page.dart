@@ -1,21 +1,23 @@
+import 'package:space_lab_tasks/Firestore/firestore_todo_crud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:space_lab_tasks/BottomNavigation/todo_list_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:space_lab_tasks/Firestore/firestore_todo_crud.dart';
 
-class AddTaskPage extends StatefulWidget {
+class UpdateTaskPage extends StatefulWidget {
   final Task? task;
+  final String docID;
 
-  AddTaskPage({Key? key, this.task}) : super(key: key);
+  
+  UpdateTaskPage({Key? key, required this.task, required this.docID});
 
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  State<UpdateTaskPage> createState() => _UpdateTaskPageState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
+class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
@@ -25,49 +27,25 @@ class _AddTaskPageState extends State<AddTaskPage> {
   DateTime dueDate = DateTime.now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
   TimeOfDay reminderTime = TimeOfDay.now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
   bool isImportant = false;
-  String note = '';
+  TextEditingController noteController = TextEditingController();
   Color taskColor = Colors.blue; // Default color and will be changed by user
   File? imageFile;
   File? audioFile;
   String? docID;
 
-
+  // Initialize state with current task data
   @override
   void initState() {
     super.initState();
-    taskNameController = TextEditingController(text: widget.task?.title);
+    taskNameController.text = widget.task?.title ?? '';
     dueDate = widget.task?.dueDate ?? DateTime.now();
     reminderTime = widget.task?.reminderTime ?? TimeOfDay.now();
     isImportant = widget.task?.isImportant ?? false;
-    note = widget.task?.note ?? '';
+    noteController.text = widget.task?.note ?? ''; // Set note to the current task's note or an empty string
     taskColor = widget.task?.taskColor ?? Colors.blue;
     imageFile = widget.task?.image;
     audioFile = widget.task?.audio;
-    docID = widget.task?.docID;
   }
-
-  // Adding task
-  void addTask() {
-    Task newTask = Task(
-      title: taskNameController.text,
-      dueDate: dueDate,
-      reminderTime: reminderTime,
-      isImportant: isImportant,
-      note: note,
-      taskColor: taskColor,
-      image: imageFile,
-      audio: audioFile,
-    );
-
-    // Add new task to list of tasks
-    todoItems.add(newTask);
-
-    Navigator.pop(context); // Return to previous page (TodoListPage)
-  }
-
-  // update task
-
-
 
   // Select image from gallery
   Future<void> _pickImage() async {
@@ -98,16 +76,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Task'),
+        title: const Text('Update Task'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-
-              SizedBox(height: 16.0),
               // Task Name
+              SizedBox(height: 16.0),
               TextField(
                 controller: taskNameController,
                 decoration: InputDecoration(
@@ -115,7 +92,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   border: OutlineInputBorder(),
                 ),
               ),
-        
+      
               // Due Date
               ListTile(
                 title: Text('Due Date: ${dueDate.toLocal()}'),
@@ -137,7 +114,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   }
                 },
               ),
-        
+      
               // Reminder Time
               ListTile(
                 title: Text('Reminder Time: ${reminderTime.format(context)}'),
@@ -157,20 +134,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   }
                 },
               ),
-        
+      
               // Note
               TextField(
+                controller: noteController,
                 decoration: InputDecoration(
                   labelText: 'Enter note',
                   border: OutlineInputBorder(),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    note = value;
-                  });
-                },
               ),
-        
+      
               // Is Important
               ListTile(
                 title: const Text('Mark as Important'),
@@ -183,7 +156,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   },
                 ),
               ),
-        
+      
               // Task Color
               ListTile(
                 title: const Text('Select Task Color'),
@@ -222,8 +195,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   );
                 },
               ),
-        
-        
+      
+      
               // attach image
               ListTile(
                 title: Text('Attach Image'),
@@ -241,37 +214,32 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   onPressed: _pickAudio,
                 ),
               ),
-        
-              // Add Task Button
+      
+              // Update Task Button
               ElevatedButton(
                 onPressed: () {
-                  if (widget.task == null) {
-                    addTask();  
-                    // add task to firestore
-                    firestoreTodoCRUD.addTask(
-                      taskNameController.text,
-                      dueDate,
-                      reminderTime,
-                      note,
-                      isImportant,
-                      taskColor,
-                      imageFile,
-                      audioFile,
-                    );
-                    // Delay clearing the text field for 2 seconds
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Task Added Successfully!'),
-                        duration: Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                    Future.delayed(Duration(seconds: 2), () {
-                      taskNameController.clear();
-                    });
-                  }
+                  firestoreTodoCRUD.updateTask(
+                    widget.docID,
+                    taskNameController.text,
+                    dueDate,
+                    reminderTime,
+                    noteController.text,
+                    isImportant,
+                    taskColor,
+                    imageFile,
+                    audioFile,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Task updated successfully!'),
+                      duration: Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  Navigator.pop(context); // Return to previous page (TodoListPage)
                 },
-                child: Text('Add Task'),
+
+                child: Text('Update Task'),
               ),
             ],
           ),
