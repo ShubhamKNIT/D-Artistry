@@ -14,186 +14,204 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
-
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
 
   @override
   Widget build(BuildContext context) {
-
     return RefreshIndicator(
       child: Scaffold(
-
         body: StreamBuilder<QuerySnapshot>(
-          stream: firestoreTodoCRUD.db.snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              
-              List<DocumentSnapshot> tasks = snapshot.data!.docs;
-              
-              return ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  
-                  // get each individual doc
-                  DocumentSnapshot task = tasks[index];
+            stream: firestoreTodoCRUD.db.snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<DocumentSnapshot> tasks = snapshot.data!.docs;
 
-                  // get data from doc
-                  String title = task['title'];
-                  // format da
-                  DateTime dueDate = task['dueDate'].toDate();
-                  TimeOfDay reminderTime = TimeOfDay(
-                    hour: int.parse(task['reminderTime'].split(':')[0]),
-                    minute: int.parse(task['reminderTime'].split(':')[1]),
-                  );
-                  String note = task['note'];
-                  bool isImportant = task['isImportant'];
-                  Color taskColor = Color(task['taskColor']);
-                  // String? imageUri = task['image'];
-                  // String? audioUri = task['audio']; 
+                return ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    // get each individual doc
+                    DocumentSnapshot task = tasks[index];
 
-                  return Container(
-                    margin: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: taskColor,
-                      shape: BoxShape.rectangle, 
-                      border: Border.all(
-                        color: Colors.grey.shade500,
-                        width: 0.1,
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 0.5,
+                    // get data from doc
+                    String title = task['title'];
+                    // format da
+                    DateTime dueDate = task['dueDate'].toDate();
+                    TimeOfDay reminderTime = TimeOfDay(
+                      hour: int.parse(task['reminderTime'].split(':')[0]),
+                      minute: int.parse(task['reminderTime'].split(':')[1]),
+                    );
+                    String note = task['note'];
+                    bool isImportant = task['isImportant'];
+                    Color taskColor = Color(task['taskColor']);
+                    // String? imageUri = task['image'];
+                    // String? audioUri = task['audio'];
+
+                    return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: taskColor,
+                        shape: BoxShape.rectangle,
+                        border: Border.all(
                           color: Colors.grey.shade500,
-                          offset: Offset(0.2, 0.4),
-                          blurStyle: BlurStyle.normal,
+                          width: 0.1,
                         ),
-                      ],   
-                      // blend image with background color
-                      backgroundBlendMode: taskColor == Colors.black ? BlendMode.difference : null,
-                    ),
-                    child: ExpansionTile(
-                      // collapsedIconColor: Color.lerp(Colors.amber, Colors.amberAccent, Colors.amberAccent.computeLuminance()),
-                      title: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 0.5,
+                            color: Colors.grey.shade500,
+                            offset: Offset(0.2, 0.4),
+                            blurStyle: BlurStyle.normal,
+                          ),
+                        ],
+                        // blend image with background color
+                        backgroundBlendMode: taskColor == Colors.black
+                            ? BlendMode.difference
+                            : null,
                       ),
-                      subtitle: Text(
-                        'Due: ${dueDate.month}/${dueDate.day}/${dueDate.year} at ${reminderTime.hour}:${reminderTime.minute}',
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          color: Colors.white
+                      child: ExpansionTile(
+                        // collapsedIconColor: Color.lerp(Colors.amber, Colors.amberAccent, Colors.amberAccent.computeLuminance()),
+                        title: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      firestoreTodoCRUD.updateTask(task.id, title, dueDate, reminderTime, note, !isImportant, taskColor, null, null);
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Marked as important!'),
-                                        duration: Duration(seconds: 2),
-                                        behavior: SnackBarBehavior.floating,
-                                      ),
-                                    );
-                                  },
-                                  icon: isImportant ? const Icon(Icons.star) : const Icon(Icons.star_border),
-                                ),
-                                // to update task
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => UpdateTaskPage(
-                                          docID: task.id,
-                                          task: Task(
-                                            title: title,
-                                            dueDate: dueDate,
-                                            reminderTime: reminderTime,
-                                            note: note,
-                                            isImportant: isImportant,
-                                            taskColor: taskColor,
-                                            // image: imageUri != null ? File(imageUri) : null,
-                                            // audio: audioUri != null ? File(audioUri) : null,
-                                          )
+                        subtitle: Text(
+                          'Due: ${dueDate.month}/${dueDate.day}/${dueDate.year} at ${reminderTime.hour}:${reminderTime.minute}',
+                          style: const TextStyle(
+                              fontSize: 15.0, color: Colors.white),
+                        ),
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(
+                                        () {
+                                          firestoreTodoCRUD.updateTask(
+                                              task.id,
+                                              title,
+                                              dueDate,
+                                              reminderTime,
+                                              note,
+                                              !isImportant,
+                                              taskColor,
+                                              null,
+                                              null);
+                                        },
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        isImportant
+                                            ? SnackBar(
+                                                content: Text(
+                                                    'Marked as important!'),
+                                                duration: Duration(seconds: 2),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              )
+                                            : SnackBar(
+                                                content: Text(
+                                                    'Marked as not important!'),
+                                                duration: Duration(seconds: 2),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              ),
+                                      );
+                                    },
+                                    icon: isImportant
+                                        ? const Icon(Icons.star)
+                                        : const Icon(Icons.star_border),
+                                  ),
+                                  // to update task
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => UpdateTaskPage(
+                                              docID: task.id,
+                                              task: Task(
+                                                title: title,
+                                                dueDate: dueDate,
+                                                reminderTime: reminderTime,
+                                                note: note,
+                                                isImportant: isImportant,
+                                                taskColor: taskColor,
+                                                // image: imageUri != null ? File(imageUri) : null,
+                                                // audio: audioUri != null ? File(audioUri) : null,
+                                              )),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  icon: Icon(Icons.edit),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    firestoreTodoCRUD.deleteTask(task.id);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Task deleted successfully!'),
-                                        duration: Duration(seconds: 2),
-                                        behavior: SnackBarBehavior.floating,
-                                      ),
-                                    );
-                                  }, 
-                                  icon: Icon(Icons.delete), 
-                                ),
-                              ],
-                            ), 
-                            SizedBox(height: 10.0),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      note,
-                                      style: const TextStyle(
-                                        fontSize: 15.0,
-                                        color: Colors.white,
+                                      );
+                                    },
+                                    icon: Icon(Icons.edit),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      firestoreTodoCRUD.deleteTask(task.id);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Task deleted successfully!'),
+                                          duration: Duration(seconds: 2),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        note,
+                                        style: const TextStyle(
+                                          fontSize: 15.0,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                // Expanded(
-                                //   child: Container(
-                                //     padding: const EdgeInsets.all(10.0),
-                                //     child: imageUri != null ? Image.network(imageUri) : null,
-                                //   ),
-                                // ),
-                                // Expanded(
-                                //   child: Container(
-                                //     padding: const EdgeInsets.all(10.0),
-                                //     child: audioUri != null ? Text('Audio: $audioUri') : null,
-                                //   ),
-                                // ),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  );
-                },
-              );
-            }
-            else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }
-        ),
+                                  // Expanded(
+                                  //   child: Container(
+                                  //     padding: const EdgeInsets.all(10.0),
+                                  //     child: imageUri != null ? Image.network(imageUri) : null,
+                                  //   ),
+                                  // ),
+                                  // Expanded(
+                                  //   child: Container(
+                                  //     padding: const EdgeInsets.all(10.0),
+                                  //     child: audioUri != null ? Text('Audio: $audioUri') : null,
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.orange,
           child: const Icon(Icons.add),
@@ -204,19 +222,19 @@ class _TodoListPageState extends State<TodoListPage> {
                 builder: (context) => AddTaskPage(),
               ),
             );
-          }, 
+          },
         ),
       ),
-      onRefresh: () async{
+      onRefresh: () async {
         await Future.delayed(const Duration(seconds: 1));
-        setState(() { // while refreshing, sort tasks by due date
+        setState(() {
+          // while refreshing, sort tasks by due date
           todoItems.sort((a, b) => a.dueDate.compareTo(b.dueDate));
         });
       },
     );
   }
 }
-
 
 // Task Model
 class Task {
