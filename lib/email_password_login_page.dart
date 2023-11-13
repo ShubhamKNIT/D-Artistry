@@ -17,8 +17,8 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false; // to change password visibility
-  bool _isLoading = false;
-  bool _isEmailVerified = false;
+  bool _isLoading = false;  // to show loading indicator
+  bool _isEmailVerified = false;  // to check if email is verified
 
   @override
   void initState() {
@@ -111,9 +111,6 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
       });
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
