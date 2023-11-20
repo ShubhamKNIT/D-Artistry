@@ -34,8 +34,9 @@ class _TodoListPageState extends State<TodoListPage> {
                     DocumentSnapshot task = tasks[index];
 
                     // get data from doc
+                    bool isCompleted = task['completed'];
                     String title = task['title'];
-                    // format da
+                    // format date and time
                     DateTime dueDate = task['dueDate'].toDate();
                     TimeOfDay reminderTime = TimeOfDay(
                       hour: int.parse(task['reminderTime'].split(':')[0]),
@@ -91,11 +92,52 @@ class _TodoListPageState extends State<TodoListPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  IconButton( // isCompleted
+                                    onPressed: () {
+                                      setState(
+                                        () {
+                                          firestoreTodoCRUD.updateTask(
+                                              !isCompleted,
+                                              task.id,
+                                              title,
+                                              dueDate,
+                                              reminderTime,
+                                              note,
+                                              isImportant,
+                                              taskColor,
+                                              null,
+                                              null);
+                                        },
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        isCompleted
+                                            ? SnackBar(
+                                                content: Text(
+                                                    'Marked as not completed!'),
+                                                duration: Duration(milliseconds: 400),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              )
+                                            : SnackBar(
+                                                content: Text(
+                                                    'Marked as completed!'),
+                                                duration: Duration(milliseconds: 400),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              ),
+                                      );
+                                    },
+                                    icon: isCompleted ?
+                                          const Icon(Icons.check_box) :
+                                          const Icon(Icons.check_box_outline_blank),
+                                  ),
                                   IconButton(
                                     onPressed: () {
                                       setState(
                                         () {
                                           firestoreTodoCRUD.updateTask(
+                                              isCompleted,
                                               task.id,
                                               title,
                                               dueDate,
@@ -112,15 +154,15 @@ class _TodoListPageState extends State<TodoListPage> {
                                         isImportant
                                             ? SnackBar(
                                                 content: Text(
-                                                    'Marked as important!'),
-                                                duration: Duration(seconds: 2),
+                                                    'Marked as not important!'),
+                                                duration: Duration(milliseconds: 400),
                                                 behavior:
                                                     SnackBarBehavior.floating,
                                               )
                                             : SnackBar(
                                                 content: Text(
-                                                    'Marked as not important!'),
-                                                duration: Duration(seconds: 2),
+                                                    'Marked as important!'),
+                                                duration: Duration(milliseconds: 400),
                                                 behavior:
                                                     SnackBarBehavior.floating,
                                               ),
@@ -238,6 +280,7 @@ class _TodoListPageState extends State<TodoListPage> {
 
 // Task Model
 class Task {
+  bool isCompleted;
   String title;
   DateTime dueDate;
   TimeOfDay reminderTime;
@@ -249,6 +292,7 @@ class Task {
   String? docID;
 
   Task({
+    this.isCompleted = false,
     required this.title,
     required this.dueDate,
     required this.reminderTime,

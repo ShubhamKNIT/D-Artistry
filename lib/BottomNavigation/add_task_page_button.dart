@@ -249,6 +249,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     addTask();  
                     // add task to firestore
                     firestoreTodoCRUD.addTask(
+                      false,
                       taskNameController.text,
                       dueDate,
                       reminderTime,

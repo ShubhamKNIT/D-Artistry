@@ -50,6 +50,7 @@ class FirestoreTodoCRUD {
 
   // add task
   Future<void> addTask (
+    bool completed,
     String title,
     DateTime dueDate,
     TimeOfDay reminderTime,
@@ -88,7 +89,7 @@ class FirestoreTodoCRUD {
       'taskColor': taskColor.value,
       'image': imageUrl.isNotEmpty ? imageUrl : null,
       'audio': audioUrl.isNotEmpty ? audioUrl : null,
-      'completed': false,
+      'completed': completed,
       'timestamp': FieldValue.serverTimestamp(), // https://firebase.flutter.dev/docs/firestore/usage/#timestamps
     }).whenComplete(() {  
       print('Task added');
@@ -113,6 +114,7 @@ class FirestoreTodoCRUD {
 
   // update task
   Future<void> updateTask(
+    bool completed,
     String docId,
     String title,
     DateTime dueDate,
@@ -151,7 +153,8 @@ class FirestoreTodoCRUD {
       'taskColor': taskColor.value,
       'image': imageUrl.isNotEmpty ? imageUrl : null,
       'audio': audioUrl.isNotEmpty ? audioUrl : null,
-      'completed': false,
+      'completed': completed,
+      'timestamp': FieldValue.serverTimestamp(),
     }).whenComplete(
       () {  
         print('Task updated: $docId');
