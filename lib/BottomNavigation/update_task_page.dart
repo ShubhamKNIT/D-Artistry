@@ -22,7 +22,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
 
-
+  bool isCompleted = false;
   TextEditingController taskNameController = TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
   DateTime dueDate = DateTime.now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
   TimeOfDay reminderTime = TimeOfDay.now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
@@ -37,6 +37,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   @override
   void initState() {
     super.initState();
+    isCompleted = widget.task?.isCompleted ?? false;
     taskNameController.text = widget.task?.title ?? '';
     dueDate = widget.task?.dueDate ?? DateTime.now();
     reminderTime = widget.task?.reminderTime ?? TimeOfDay.now();
@@ -219,6 +220,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               ElevatedButton(
                 onPressed: () {
                   firestoreTodoCRUD.updateTask(
+                    isCompleted,
                     widget.docID,
                     taskNameController.text,
                     dueDate,
