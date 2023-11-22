@@ -55,8 +55,8 @@ class FirstPage extends StatelessWidget {
 
               const SizedBox(height: 16),
               
-              // App Features
-              const Text('1. Store notes and tasks with titles and descriptions.'),
+              const Text(
+                  '1. Store notes and tasks with titles and descriptions.'),
               const Text('2. Schedule reminders for your tasks and notes.'),
               const Text('3. Categorize and color-code your notes.'),
               const Text('4. Add images and drawings to your notes.'),

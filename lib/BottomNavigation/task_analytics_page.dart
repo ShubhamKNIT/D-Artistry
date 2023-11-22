@@ -22,6 +22,12 @@ class _TaskAnalyticsPageState extends State<TaskAnalyticsPage> {
     fetchTaskAnalytics();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchTaskAnalytics();
+  }
+
   Future<void> fetchTaskAnalytics() async {
     try {
       final FirestoreAnalyticsCRUD analyticsCRUD = FirestoreAnalyticsCRUD();
