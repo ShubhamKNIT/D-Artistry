@@ -1,51 +1,48 @@
+import 'package:space_lab_tasks/Profile%20UI/profile_ui.dart';
+import 'package:space_lab_tasks/auth_test.dart';
 import 'package:flutter/material.dart';
-
-// implement change profile information likle name, email, phone number, password, etc
 
 class ChangeProfileInfo extends StatefulWidget {
   final String initialName;
   final String initialEmail;
-  final String initialPhone;
   final String initialDOB;
 
   final Function(String name) onNameUpdated;
   final Function(String email) onEmailUpdated;
-  final Function(String phone) onPhoneUpdated;
-  final Function(String password) onPasswordUpdated;
+  // final Function(String password) onPasswordUpdated;
   final Function(String dob) onDOBUpdated;
+  final Function onSave;
 
-  const ChangeProfileInfo(
-      {Key? key,
-      required this.onNameUpdated,
-      required this.onEmailUpdated,
-      required this.onPasswordUpdated,
-      required this.onPhoneUpdated,
-      required this.initialName,
-      required this.initialEmail,
-      required this.initialPhone,
-      required this.initialDOB,
-      required this.onDOBUpdated})
-      : super(key: key);
+  const ChangeProfileInfo({
+    Key? key,
+    required this.onNameUpdated,
+    required this.onEmailUpdated,
+    // required this.onPasswordUpdated,
+    required this.initialName,
+    required this.initialEmail,
+    required this.initialDOB,
+    required this.onDOBUpdated, 
+    required this.onSave,
+  }) : super(key: key);
 
   @override
   State<ChangeProfileInfo> createState() => _ChangeProfileInfoState();
+  
 }
 
 class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController nameController;
   late TextEditingController emailController;
-  late TextEditingController phoneController;
   late TextEditingController dobController;
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  // final passwordController = TextEditingController();
+  // final confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.initialName);
     emailController = TextEditingController(text: widget.initialEmail);
-    phoneController = TextEditingController(text: widget.initialPhone);
     dobController = TextEditingController(text: widget.initialDOB);
   }
 
@@ -53,10 +50,9 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
   void dispose() {
     nameController.dispose();
     emailController.dispose();
-    phoneController.dispose();
     dobController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    // passwordController.dispose();
+    // confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -65,14 +61,15 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
       widget.onNameUpdated(nameController.text);
       widget.onEmailUpdated(emailController.text);
       widget.onDOBUpdated(dobController.text);
-      widget.onPhoneUpdated(phoneController.text);
-      widget.onPasswordUpdated(passwordController.text);
+      // widget.onPasswordUpdated(passwordController.text);
+
+      widget.onSave();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
 
-      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileUI()));
     }
   }
 
@@ -84,13 +81,9 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
     widget.onEmailUpdated(email);
   }
 
-  void updatePhone(String phone) {
-    widget.onPhoneUpdated(phone);
-  }
-
-  void updatePassword(String password) {
-    widget.onPasswordUpdated(password);
-  }
+  // void updatePassword(String password) {
+  //   widget.onPasswordUpdated(password);
+  // }
 
   void updateDOB(String dob) {
     widget.onDOBUpdated(dob);
@@ -126,10 +119,12 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                       labelText: 'Name',
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
+                      if (checkValidName(nameController.text) == false) {
+                        return 'Please enter a valid name';
                       }
-                      return null;
+                      else {
+                        return null;
+                      }
                     },
                     onSaved: (value) {
                       updateName(value!);
@@ -149,10 +144,12 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                       labelText: 'Email',
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                      if (checkValidEmail(emailController.text) == false) {
+                        return 'Please enter a valid email';
                       }
-                      return null;
+                      else {
+                        return null;
+                      }
                     },
                     onSaved: (value) {
                       updateEmail(value!);
@@ -160,29 +157,7 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: SizedBox(
-                  height: 50,
-                  width: 320,
-                  child: TextFormField(
-                    controller: phoneController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Phone Number',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      updatePhone(value!);
-                    },
-                  ),
-                ),
-              ),
+
               Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: SizedBox(
@@ -195,10 +170,12 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                       labelText: 'Date of Birth',
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your date of birth';
+                      if (checkValidDOB(dobController.text) == false) {
+                        return 'Please enter a valid date of birth';
                       }
-                      return null;
+                      else {
+                        return null;
+                      }
                     },
                     onSaved: (value) {
                       updateDOB(value!);
@@ -206,55 +183,55 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: SizedBox(
-                  height: 50,
-                  width: 320,
-                  child: TextFormField(
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 8) {
-                        return 'Password must be at least 8 characters long';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      updatePassword(value!);
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: SizedBox(
-                  height: 50,
-                  width: 320,
-                  child: TextFormField(
-                    controller: confirmPasswordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Confirm Password',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: EdgeInsets.only(top: 10),
+              //   child: SizedBox(
+              //     height: 50,
+              //     width: 320,
+              //     child: TextFormField(
+              //       controller: passwordController,
+              //       decoration: const InputDecoration(
+              //         border: OutlineInputBorder(),
+              //         labelText: 'Password',
+              //       ),
+              //       validator: (value) {
+              //         if (value == null || value.isEmpty) {
+              //           return 'Please enter your password';
+              //         }
+              //         if (value.length < 8) {
+              //           return 'Password must be at least 8 characters long';
+              //         }
+              //         return null;
+              //       },
+              //       onSaved: (value) {
+              //         updatePassword(value!);
+              //       },
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.only(top: 10),
+              //   child: SizedBox(
+              //     height: 50,
+              //     width: 320,
+              //     child: TextFormField(
+              //       controller: confirmPasswordController,
+              //       decoration: const InputDecoration(
+              //         border: OutlineInputBorder(),
+              //         labelText: 'Confirm Password',
+              //       ),
+              //       validator: (value) {
+              //         if (value == null || value.isEmpty) {
+              //           return 'Please confirm your password';
+              //         }
+              //         if (value != passwordController.text) {
+              //           return 'Passwords do not match';
+              //         }
+              //         return null;
+              //       },
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: SizedBox(
