@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:space_lab_tasks/Firestore/delete_user.dart';
 import 'package:space_lab_tasks/Firestore/profile_page_crud.dart';
+import 'package:space_lab_tasks/forgot_password.dart';
 import 'edit_profile.dart';
 
 class ProfileUI extends StatefulWidget {
@@ -185,13 +187,34 @@ class _ProfileUIState extends State<ProfileUI> {
                         _buildProfileDetail(
                             'Date of Birth', _userData['dateOfBirth']),
 
-                        SizedBox(height: 20),
+                        SizedBox(height: MediaQuery.of(context).size.height / 20),
+                        GestureDetector(
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            )
+                          ),
+                          onTap:() => Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => ForgotPassword()
+                            )
+                          )
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height / 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ElevatedButton(
                               onPressed: () {
                                 // Delete account from the firestore
+                                Navigator.push(context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => DeleteAccountAndData()
+                                  )
+                                );
                               },
                               child: Text('Delete Account'),
                               style: ElevatedButton.styleFrom(
