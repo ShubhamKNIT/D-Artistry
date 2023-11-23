@@ -1,8 +1,10 @@
+import 'package:provider/provider.dart';
 import 'package:space_lab_tasks/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:space_lab_tasks/first_page.dart';
 import 'package:space_lab_tasks/auth_test.dart';
+import 'package:space_lab_tasks/theme_manager.dart';
 import 'package:space_lab_tasks/verify_email.dart';
 
 class EmailPasswordLoginPage extends StatefulWidget {
@@ -122,105 +124,111 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Welcome back! Sign in with your email and password.',
-                style: TextStyle(fontSize: 15),
-              ),
-              SizedBox(height: 25),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5.0),
+    final themeManager = Provider.of<ThemeManager>(context);
+    return Theme(
+      data: themeManager.isLightTheme ? ThemeData.light() : ThemeData.dark(),
+      child: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'Welcome back! Sign in with your email and password.',
+                  style: TextStyle(fontSize: 15),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextFormField(
-                  enableSuggestions: true,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _emailController,
-                  validator: (value) {
-                    if (checkValidEmail(value!)) {
-                      return null;
-                    } else {
-                      return 'Please enter a valid email address';
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: InputBorder.none, // to remove the underline
-                    labelText: 'Email',
-                    icon: Icon(Icons.email),
+                SizedBox(height: 25),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextFormField(
+                    enableSuggestions: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _emailController,
+                    validator: (value) {
+                      if (checkValidEmail(value!)) {
+                        return null;
+                      } else {
+                        return 'Please enter a valid email address';
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      border: InputBorder.none, // to remove the underline
+                      labelText: 'Email',
+                      icon: Icon(Icons.email),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Password',
-                    icon: Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Password',
+                      icon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(
+                            () {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            },
+                          );
+                        },
                       ),
-                      onPressed: () {
-                        setState(
-                          () {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          },
-                        );
-                      },
                     ),
+                    obscureText: !_isPasswordVisible,
                   ),
-                  obscureText: !_isPasswordVisible,
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                textDirection: TextDirection.rtl,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      _handleEmailSignIn();
-                    },
-                    child: const Text('Sign In'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+                const SizedBox(height: 16),
+                Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleEmailSignIn();
+                      },
+                      child: const Text('Sign In'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => FirstPage()));
-                    },
-                    child: const Text('Cancel'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FirstPage()));
+                      },
+                      child: const Text('Cancel'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              if (_isLoading) // if loading show circular progress indicator
-                const CircularProgressIndicator(),
-            ],
+                  ],
+                ),
+                if (_isLoading) // if loading show circular progress indicator
+                  const CircularProgressIndicator(),
+              ],
+            ),
           ),
         ),
       ),

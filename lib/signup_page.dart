@@ -1,10 +1,12 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
+import "package:provider/provider.dart";
 import "package:space_lab_tasks/alert_dialog.dart";
 import "package:space_lab_tasks/auth_test.dart";
 import "package:space_lab_tasks/email_password_login_page.dart";
 import "package:space_lab_tasks/first_page.dart";
+import "package:space_lab_tasks/theme_manager.dart";
 import "package:space_lab_tasks/verify_email.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -208,244 +210,248 @@ class _SignUpPageState extends State<SignUpPage> {
   // build the widget
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                Text(
-                  'Welcome! to sign up page.',
-                  style: TextStyle(fontSize: 15),
-                ),
-
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-
-                // name container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
+    final themeManager = Provider.of<ThemeManager>(context);
+    return Theme(
+      data: themeManager.isLightTheme ? ThemeData.light() : ThemeData.dark(),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                  Text(
+                    'Welcome! to sign up page.',
+                    style: TextStyle(fontSize: 15),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _name,
-                    keyboardType:
-                        TextInputType.name, // @symbol for email in keyboard
-                    validator: (value) {
-                      if (checkValidName(value!)) {
-                        return null;
-                      } else {
-                        return 'Name must consist of only alphabets.';
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Name',
-                      icon: Icon(Icons.person),
-                      border: InputBorder.none,
+      
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+      
+                  // name container
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: _name,
+                      keyboardType:
+                          TextInputType.name, // @symbol for email in keyboard
+                      validator: (value) {
+                        if (checkValidName(value!)) {
+                          return null;
+                        } else {
+                          return 'Name must consist of only alphabets.';
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Name',
+                        icon: Icon(Icons.person),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
-                ),
-
-                SizedBox(height: 10),
-
-                // dob container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      _openDatePicker();
-                    },
-                    child: AbsorbPointer(
-                      absorbing: true,
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        readOnly: true,
-                        controller: _dateOfBirthController,
-                        validator: (value) {
-                          if (checkValidDOB(value!)) {
-                            return null;
-                          } else {
-                            return 'User must be 7 years or older.';
-                          }
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Date of Birth',
-                          icon: Icon(Icons.calendar_today),
-                          border: InputBorder.none,
+      
+                  SizedBox(height: 10),
+      
+                  // dob container
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        _openDatePicker();
+                      },
+                      child: AbsorbPointer(
+                        absorbing: true,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          controller: _dateOfBirthController,
+                          validator: (value) {
+                            if (checkValidDOB(value!)) {
+                              return null;
+                            } else {
+                              return 'User must be 7 years or older.';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Date of Birth',
+                            icon: Icon(Icons.calendar_today),
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-
-                SizedBox(height: 10),
-
-                // email container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _email,
-                    keyboardType: TextInputType
-                        .emailAddress, // @symbol for email in keyboard
-                    validator: (value) {
-                      if (checkValidEmail(value!)) {
-                        return null;
-                      } else {
-                        return 'Please enter a valid email address';
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Email',
-                      icon: Icon(Icons.email),
-                      border: InputBorder.none,
+      
+                  SizedBox(height: 10),
+      
+                  // email container
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
-                  ),
-                ),
-
-                SizedBox(height: 10),
-
-                // password container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _password,
-                    obscureText:
-                        !_isPasswordVisible, // hide the password (we can also use obscureText: true, but visibilty does not change)
-                    enableSuggestions: false, // disable suggestions
-                    autocorrect: false, // disable autocorrect
-                    validator: (value) {
-                      if (checkValidPassword(value!)) {
-                        return null;
-                      } else {
-                        return '[a-z] [A-Z] [0-9] [!@#\$&*~] must be present in password.';
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      icon: Icon(Icons.lock),
-                      border: InputBorder.none,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: _email,
+                      keyboardType: TextInputType
+                          .emailAddress, // @symbol for email in keyboard
+                      validator: (value) {
+                        if (checkValidEmail(value!)) {
+                          return null;
+                        } else {
+                          return 'Please enter a valid email address';
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                        icon: Icon(Icons.email),
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
-                ),
-
-                SizedBox(height: 10),
-
-                // confirm password container
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _confirmPassword,
-                    obscureText: !_isPasswordVisible, // to hide the password
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    validator: (value) {
-                      if (_password.text == _confirmPassword.text) {
-                        return null;
-                      } else {
-                        return 'Your password do not match. Please retype the password.';
-                      }
-                    },
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      hintText: 'Confirm Password',
-                      border: InputBorder.none,
-                      suffixIcon: IconButton(
-                        // change visibility of password
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(
-                            () {
+      
+                  SizedBox(height: 10),
+      
+                  // password container
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: _password,
+                      obscureText:
+                          !_isPasswordVisible, // hide the password (we can also use obscureText: true, but visibilty does not change)
+                      enableSuggestions: false, // disable suggestions
+                      autocorrect: false, // disable autocorrect
+                      validator: (value) {
+                        if (checkValidPassword(value!)) {
+                          return null;
+                        } else {
+                          return '[a-z] [A-Z] [0-9] [!@#\$&*~] must be present in password.';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        icon: Icon(Icons.lock),
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
                               _isPasswordVisible = !_isPasswordVisible;
-                            },
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+      
+                  SizedBox(height: 10),
+      
+                  // confirm password container
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: _confirmPassword,
+                      obscureText: !_isPasswordVisible, // to hide the password
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      validator: (value) {
+                        if (_password.text == _confirmPassword.text) {
+                          return null;
+                        } else {
+                          return 'Your password do not match. Please retype the password.';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock),
+                        hintText: 'Confirm Password',
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                          // change visibility of password
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(
+                              () {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+      
+                  SizedBox(height: 16),
+      
+                  // Sign Up Cancel Buttons
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _handleSignUp();
+                        },
+                        child: const Text('Sign Up'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FirstPage(),
+                            ),
                           );
                         },
+                        child: const Text('Cancel'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-
-                SizedBox(height: 16),
-
-                // Sign Up Cancel Buttons
-                Row(
-                  textDirection: TextDirection.rtl,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _handleSignUp();
-                      },
-                      child: const Text('Sign Up'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FirstPage(),
-                          ),
-                        );
-                      },
-                      child: const Text('Cancel'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                if (_isLoading) const CircularProgressIndicator(),
-              ],
+                  SizedBox(height: 16),
+                  if (_isLoading) const CircularProgressIndicator(),
+                ],
+              ),
             ),
           ),
         ),
