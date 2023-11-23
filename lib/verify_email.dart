@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:space_lab_tasks/dashboard_page.dart';
 import 'package:flutter/material.dart';
+import 'package:space_lab_tasks/theme_manager.dart';
 
 class VerifyEmail extends StatefulWidget {
   @override
@@ -97,85 +99,98 @@ class _VerifyEmailState extends State<VerifyEmail> {
   }
 
   @override
-  Widget build(BuildContext context) => isEmailVerified
-      ? Scaffold(
-          body: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(
-              // if email is verified, show this.
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Your Email is Verified!. You can now sign in.',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(height: 10.0),
-                  ElevatedButton(
-                    child: Text('Continue'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => DashboardPage(),
+  Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
+    return isEmailVerified
+        ? Theme(
+            data: themeManager.isLightTheme
+                ? ThemeData.light()
+                : ThemeData.dark(),
+            child: Scaffold(
+              body: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(
+                  // if email is verified, show this.
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Your Email is Verified!. You can now sign in.',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 10.0),
+                      ElevatedButton(
+                        child: Text('Continue'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
                         ),
-                      );
-                    },
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => DashboardPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        )
-      : Scaffold(
-          // if email is not verified, show this.
-          appBar: AppBar(
-            title: Text('Verify Email'),
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Please verify your email.',
-                    textAlign: TextAlign.center,
+          )
+        : Theme(
+            data: themeManager.isLightTheme
+                ? ThemeData.light()
+                : ThemeData.dark(),
+            child: Scaffold(
+              // if email is not verified, show this.
+              appBar: AppBar(
+                title: Text('Verify Email'),
+              ),
+              body: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Please verify your email.',
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10.0),
+                      ElevatedButton.icon(
+                        // it requries label and icon other than onPressed.
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          // change button color to grey if canResendEmail is false.
+                          backgroundColor:
+                              canResendEmail ? Colors.blue : Colors.grey,
+                        ),
+                        icon: Icon(Icons.email),
+                        onPressed: () {
+                          canResendEmail ? sendVerificationEmail() : null;
+                        },
+                        label: Text('Resend Email'),
+                      ),
+                      SizedBox(height: 10.0),
+                      ElevatedButton(
+                        child: Text('Cancel'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      if (_isLoading) // show loading indicator
+                        CircularProgressIndicator(),
+                    ],
                   ),
-                  SizedBox(height: 10.0),
-                  ElevatedButton.icon(
-                    // it requries label and icon other than onPressed.
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      // change button color to grey if canResendEmail is false.
-                      backgroundColor:
-                          canResendEmail ? Colors.blue : Colors.grey,
-                    ),
-                    icon: Icon(Icons.email),
-                    onPressed: () {
-                      canResendEmail ? sendVerificationEmail() : null;
-                    },
-                    label: Text('Resend Email'),
-                  ),
-                  SizedBox(height: 10.0),
-                  ElevatedButton(
-                    child: Text('Cancel'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  if (_isLoading) // show loading indicator
-                    CircularProgressIndicator(),
-                ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+  }
 }

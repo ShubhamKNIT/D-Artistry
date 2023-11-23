@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:space_lab_tasks/BottomNavigation/add_task_page_button.dart';
 import 'package:space_lab_tasks/BottomNavigation/update_task_page.dart';
 import 'package:space_lab_tasks/Firestore/firestore_todo_crud.dart';
+import 'package:space_lab_tasks/theme_manager.dart';
 
 class TodoListPage extends StatefulWidget {
-  const TodoListPage({super.key});
+  final ThemeManager themeManager;
+  const TodoListPage({super.key, required this.themeManager});
 
   @override
   State<TodoListPage> createState() => _TodoListPageState();
 }
 
 class _TodoListPageState extends State<TodoListPage> {
+  ThemeManager get themeManager => widget.themeManager;
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
 
@@ -98,16 +101,17 @@ class _TodoListPageState extends State<TodoListPage> {
                                     setState(
                                       () {
                                         firestoreTodoCRUD.updateTask(
-                                            !isCompleted,
-                                            task.id,
-                                            title,
-                                            dueDate,
-                                            reminderTime,
-                                            note,
-                                            isImportant,
-                                            taskColor,
-                                            null,
-                                            null);
+                                          !isCompleted,
+                                          task.id,
+                                          title,
+                                          dueDate,
+                                          reminderTime,
+                                          note,
+                                          isImportant,
+                                          taskColor,
+                                          // null,
+                                          // null
+                                        );
                                       },
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -140,16 +144,17 @@ class _TodoListPageState extends State<TodoListPage> {
                                     setState(
                                       () {
                                         firestoreTodoCRUD.updateTask(
-                                            isCompleted,
-                                            task.id,
-                                            title,
-                                            dueDate,
-                                            reminderTime,
-                                            note,
-                                            !isImportant,
-                                            taskColor,
-                                            null,
-                                            null);
+                                          isCompleted,
+                                          task.id,
+                                          title,
+                                          dueDate,
+                                          reminderTime,
+                                          note,
+                                          !isImportant,
+                                          taskColor,
+                                          // null,
+                                          // null
+                                        );
                                       },
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -265,7 +270,7 @@ class _TodoListPageState extends State<TodoListPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddTaskPage(),
+                builder: (context) => AddTaskPage(themeManager: themeManager),
               ),
             );
           },
