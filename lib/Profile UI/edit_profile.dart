@@ -21,13 +21,12 @@ class ChangeProfileInfo extends StatefulWidget {
     required this.initialName,
     required this.initialEmail,
     required this.initialDOB,
-    required this.onDOBUpdated, 
+    required this.onDOBUpdated,
     required this.onSave,
   }) : super(key: key);
 
   @override
   State<ChangeProfileInfo> createState() => _ChangeProfileInfoState();
-  
 }
 
 class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
@@ -69,7 +68,8 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
         const SnackBar(content: Text('Processing Data')),
       );
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileUI()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ProfileUI()));
     }
   }
 
@@ -121,8 +121,7 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                     validator: (value) {
                       if (checkValidName(nameController.text) == false) {
                         return 'Please enter a valid name';
-                      }
-                      else {
+                      } else {
                         return null;
                       }
                     },
@@ -146,8 +145,7 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                     validator: (value) {
                       if (checkValidEmail(emailController.text) == false) {
                         return 'Please enter a valid email';
-                      }
-                      else {
+                      } else {
                         return null;
                       }
                     },
@@ -172,8 +170,7 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                     validator: (value) {
                       if (checkValidDOB(dobController.text) == false) {
                         return 'Please enter a valid date of birth';
-                      }
-                      else {
+                      } else {
                         return null;
                       }
                     },
@@ -240,6 +237,10 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                   child: ElevatedButton(
                     onPressed: updateUserDetailsAndGoBack,
                     child: const Text('Submit'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ),
               )

@@ -22,9 +22,11 @@ class _DashboardPageState extends State<DashboardPage> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedItem = index;
-    });
+    setState(
+      () {
+        _selectedItem = index;
+      },
+    );
   }
 
   // Sign out of Firebase Auth
@@ -43,49 +45,61 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        child: Scaffold(
-          body: _selectedItem == 0
-              ? const TodoListPage() // Display TodoListPage when "Home" is selected
-              : _pages.elementAt(_selectedItem),
+    return PopScope(
+      child: Scaffold(
+        body: _selectedItem == 0
+            ? const TodoListPage() // Display TodoListPage when "Home" is selected
+            : _pages.elementAt(_selectedItem),
 
-          appBar: AppBar(
-            automaticallyImplyLeading: false, // back button removed
-            title: const Text('Space Lab Tasks'),
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // back button removed
 
-            actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  _signout();
-                },
-                icon: const Icon(Icons.logout),
-              )
-            ],
+          centerTitle: true,
+
+          // Theme logo at the left position
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.brightness_2),
+            ),
           ),
 
-          // Bottom Navigation Bar with 3 items (Home, Task Analytics, Profile)
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.analytics),
-                label: 'Task Analytics',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
-            currentIndex: _selectedItem,
-            onTap: _onItemTapped,
-          ),
+          title: const Text('Space Lab Tasks'),
+
+          actions: <Widget>[
+            // Sign out button
+            IconButton(
+              onPressed: () {
+                _signout();
+              },
+              icon: const Icon(Icons.logout),
+            )
+          ],
         ),
-        onWillPop: () async {
-          // Disable back button
-          return false;
-        });
+
+        // Bottom Navigation Bar with 3 items (Home, Task Analytics, Profile)
+        bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.blue,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.analytics),
+              label: 'Task Analytics',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedItem,
+          onTap: _onItemTapped,
+        ),
+      ),
+      canPop: false,
+    );
   }
 }

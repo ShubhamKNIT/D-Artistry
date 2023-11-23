@@ -32,15 +32,18 @@ class _TaskAnalyticsPageState extends State<TaskAnalyticsPage> {
     try {
       final FirestoreAnalyticsCRUD analyticsCRUD = FirestoreAnalyticsCRUD();
       User? user = FirebaseAuth.instance.currentUser;
-      Map<String, int> taskAnalytics = await analyticsCRUD.getTotalTasks(user!.uid);
+      Map<String, int> taskAnalytics =
+          await analyticsCRUD.getTotalTasks(user!.uid);
 
       totalTasks = taskAnalytics['totalTasks'] ?? 0;
       int completed = taskAnalytics['completedTasks'] ?? 0;
 
-      setState(() {
-        completedTasks = completed;
-        pendingTasks = totalTasks - completed;
-      });
+      setState(
+        () {
+          completedTasks = completed;
+          pendingTasks = totalTasks - completed;
+        },
+      );
     } catch (e) {
       print('Error fetching task analytics: $e');
       // Handle the error appropriately (e.g., show a snackbar, display a message, etc.)
@@ -50,23 +53,32 @@ class _TaskAnalyticsPageState extends State<TaskAnalyticsPage> {
   List<charts.Series<WeekData, String>> _createSampleData() {
     DateTime currentDate = DateTime.now();
 
-    final completedData = List.generate(7, (index) {
-      DateTime date = currentDate.subtract(Duration(days: 6 - index));
-      String formattedDate = DateFormat('dd MMM').format(date);
-      return WeekData(formattedDate, completedTasks);
-    });
+    final completedData = List.generate(
+      7,
+      (index) {
+        DateTime date = currentDate.subtract(Duration(days: 6 - index));
+        String formattedDate = DateFormat('dd MMM').format(date);
+        return WeekData(formattedDate, completedTasks);
+      },
+    );
 
-    final pendingData = List.generate(7, (index) {
-      DateTime date = currentDate.subtract(Duration(days: 6 - index));
-      String formattedDate = DateFormat('dd MMM').format(date);
-      return WeekData(formattedDate, pendingTasks);
-    });
+    final pendingData = List.generate(
+      7,
+      (index) {
+        DateTime date = currentDate.subtract(Duration(days: 6 - index));
+        String formattedDate = DateFormat('dd MMM').format(date);
+        return WeekData(formattedDate, pendingTasks);
+      },
+    );
 
-    final totalData = List.generate(7, (index) {
-      DateTime date = currentDate.subtract(Duration(days: 6 - index));
-      String formattedDate = DateFormat('dd MMM').format(date);
-      return WeekData(formattedDate, totalTasks);
-    });
+    final totalData = List.generate(
+      7,
+      (index) {
+        DateTime date = currentDate.subtract(Duration(days: 6 - index));
+        String formattedDate = DateFormat('dd MMM').format(date);
+        return WeekData(formattedDate, totalTasks);
+      },
+    );
 
     return [
       charts.Series<WeekData, String>(
@@ -187,7 +199,6 @@ class _TaskAnalyticsPageState extends State<TaskAnalyticsPage> {
                     position: charts.BehaviorPosition.bottom,
                     horizontalFirst: false,
                     cellPadding: EdgeInsets.all(4.0),
-
                   ),
                 ],
               ),

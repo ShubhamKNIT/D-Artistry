@@ -4,7 +4,6 @@ class FirestoreProfileCRUD {
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
-
   Future<Map<String, dynamic>> getUserDetails(String userId) async {
     try {
       QuerySnapshot userDetailsDocs = await FirebaseFirestore.instance
@@ -15,8 +14,8 @@ class FirestoreProfileCRUD {
           .get();
 
       if (userDetailsDocs.docs.isNotEmpty) {
-        Map<String, dynamic> data = userDetailsDocs.docs.first.data()
-            as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            userDetailsDocs.docs.first.data() as Map<String, dynamic>;
         return data;
       } else {
         return {}; // Return an empty map or handle the scenario accordingly
@@ -27,7 +26,8 @@ class FirestoreProfileCRUD {
     }
   }
 
-  Future<void> setUserDetails(String userId, String docId, Map<String, dynamic> data) async {
+  Future<void> setUserDetails(
+      String userId, String docId, Map<String, dynamic> data) async {
     try {
       await FirebaseFirestore.instance
           .collection('users')
@@ -58,5 +58,4 @@ class FirestoreProfileCRUD {
     }
     return null;
   }
-
 }

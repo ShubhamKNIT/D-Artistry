@@ -14,16 +14,17 @@ class _VerifyEmailState extends State<VerifyEmail> {
   late Timer? timer; // dummy timer to initialize.
   bool _isLoading = false; // to show loading indicator
 
-
   @override
   void initState() {
     super.initState();
-    
-    User? currentUser = FirebaseAuth.instance.currentUser; 
-    if (currentUser != null) { // if user is not null, check if email is verified.
+
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      // if user is not null, check if email is verified.
       isEmailVerified = currentUser.emailVerified;
 
-      if (!isEmailVerified) { // if email is not verified send verification link.
+      if (!isEmailVerified) {
+        // if email is not verified send verification link.
         // if email is not verified send verification link.
         sendVerificationEmail();
 
@@ -33,21 +34,23 @@ class _VerifyEmailState extends State<VerifyEmail> {
         );
       }
     }
-
   }
 
   @override
-  void dispose() { // cancel timer when dispose.
+  void dispose() {
+    // cancel timer when dispose.
     timer?.cancel();
     super.dispose();
   }
 
   Future<void> sendVerificationEmail() async {
     try {
-
-      setState(() { // show loading indicator.
-        _isLoading = true; 
-      });
+      setState(
+        () {
+          // show loading indicator.
+          _isLoading = true;
+        },
+      );
 
       User? user = FirebaseAuth.instance.currentUser;
       await user?.sendEmailVerification();
@@ -64,7 +67,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
       setState(() => canResendEmail = false);
       await Future.delayed(Duration(seconds: 5));
       setState(() => canResendEmail = true);
-
     } on Exception catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,14 +75,16 @@ class _VerifyEmailState extends State<VerifyEmail> {
         ),
       );
     } finally {
-      setState(() { // hide loading indicator.
-        _isLoading = false;
-      });
+      setState(
+        () {
+          // hide loading indicator.
+          _isLoading = false;
+        },
+      );
     }
   }
 
   Future<void> checkEmailVerified() async {
-    
     // call authStateChanges to update user data.
     final user = FirebaseAuth.instance.currentUser;
     await user!.reload();
@@ -88,77 +92,90 @@ class _VerifyEmailState extends State<VerifyEmail> {
     setState(() {
       isEmailVerified = user.emailVerified;
     });
-    
+
     if (isEmailVerified) timer?.cancel();
   }
 
-
   @override
   Widget build(BuildContext context) => isEmailVerified
-    ? Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Center( // if email is verified, show this.
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Your Email is Verified!. You can now sign in.',
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 10.0),
-              ElevatedButton(
-                child: Text('Continue'),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => DashboardPage()
-                    ),  
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      )
-    )
-    : Scaffold( // if email is not verified, show this.
-        appBar: AppBar(
-          title: Text('Verify Email'),
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Please verify your email.',
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10.0),
-                ElevatedButton.icon( // it requries label and icon other than onPressed.
-                  style: ElevatedButton.styleFrom( // change button color to grey if canResendEmail is false.
-                    backgroundColor: canResendEmail ? null : Colors.grey,
+      ? Scaffold(
+          body: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              // if email is verified, show this.
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Your Email is Verified!. You can now sign in.',
+                    style: TextStyle(fontSize: 20),
                   ),
-                  icon: Icon(Icons.email),
-                  onPressed: () {
-                    canResendEmail ? sendVerificationEmail() : null;
-                  },
-                  label: Text('Resend Email'),
-                ),
-                SizedBox(height: 10.0),
-                ElevatedButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                if (_isLoading) // show loading indicator
-                    CircularProgressIndicator(),
-              ],
+                  SizedBox(height: 10.0),
+                  ElevatedButton(
+                    child: Text('Continue'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
         )
-    );
+      : Scaffold(
+          // if email is not verified, show this.
+          appBar: AppBar(
+            title: Text('Verify Email'),
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Please verify your email.',
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10.0),
+                  ElevatedButton.icon(
+                    // it requries label and icon other than onPressed.
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      // change button color to grey if canResendEmail is false.
+                      backgroundColor:
+                          canResendEmail ? Colors.blue : Colors.grey,
+                    ),
+                    icon: Icon(Icons.email),
+                    onPressed: () {
+                      canResendEmail ? sendVerificationEmail() : null;
+                    },
+                    label: Text('Resend Email'),
+                  ),
+                  SizedBox(height: 10.0),
+                  ElevatedButton(
+                    child: Text('Cancel'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  if (_isLoading) // show loading indicator
+                    CircularProgressIndicator(),
+                ],
+              ),
+            ),
+          ),
+        );
 }

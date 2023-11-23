@@ -10,7 +10,6 @@ class UpdateTaskPage extends StatefulWidget {
   final Task? task;
   final String docID;
 
-  
   UpdateTaskPage({Key? key, required this.task, required this.docID});
 
   @override
@@ -18,14 +17,16 @@ class UpdateTaskPage extends StatefulWidget {
 }
 
 class _UpdateTaskPageState extends State<UpdateTaskPage> {
-
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
 
   bool isCompleted = false;
-  TextEditingController taskNameController = TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
-  DateTime dueDate = DateTime.now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
-  TimeOfDay reminderTime = TimeOfDay.now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
+  TextEditingController taskNameController =
+      TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
+  DateTime dueDate = DateTime
+      .now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
+  TimeOfDay reminderTime = TimeOfDay
+      .now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
   bool isImportant = false;
   TextEditingController noteController = TextEditingController();
   Color taskColor = Colors.blue; // Default color and will be changed by user
@@ -42,7 +43,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     dueDate = widget.task?.dueDate ?? DateTime.now();
     reminderTime = widget.task?.reminderTime ?? TimeOfDay.now();
     isImportant = widget.task?.isImportant ?? false;
-    noteController.text = widget.task?.note ?? ''; // Set note to the current task's note or an empty string
+    noteController.text = widget.task?.note ??
+        ''; // Set note to the current task's note or an empty string
     taskColor = widget.task?.taskColor ?? Colors.blue;
     imageFile = widget.task?.image;
     audioFile = widget.task?.audio;
@@ -53,9 +55,11 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path); // store image file uri
-      });
+      setState(
+        () {
+          imageFile = File(pickedFile.path); // store image file uri
+        },
+      );
     }
   }
 
@@ -67,9 +71,11 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     );
 
     if (result != null) {
-      setState(() {
-        audioFile = File(result.files.single.path!); // store audio file uri
-      });
+      setState(
+        () {
+          audioFile = File(result.files.single.path!); // store audio file uri
+        },
+      );
     }
   }
 
@@ -93,7 +99,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   border: OutlineInputBorder(),
                 ),
               ),
-      
+
               // Due Date
               ListTile(
                 title: Text('Due Date: ${dueDate.toLocal()}'),
@@ -115,7 +121,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   }
                 },
               ),
-      
+
               // Reminder Time
               ListTile(
                 title: Text('Reminder Time: ${reminderTime.format(context)}'),
@@ -135,7 +141,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   }
                 },
               ),
-      
+
               // Note
               TextField(
                 controller: noteController,
@@ -144,7 +150,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   border: OutlineInputBorder(),
                 ),
               ),
-      
+
               // Is Important
               ListTile(
                 title: const Text('Mark as Important'),
@@ -157,7 +163,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   },
                 ),
               ),
-      
+
               // Task Color
               ListTile(
                 title: const Text('Select Task Color'),
@@ -196,8 +202,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   );
                 },
               ),
-      
-      
+
               // attach image
               ListTile(
                 title: Text('Attach Image'),
@@ -206,7 +211,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   onPressed: _pickImage,
                 ),
               ),
-              
+
               // attach audio
               ListTile(
                 title: Text('Attach Audio'),
@@ -215,7 +220,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   onPressed: _pickAudio,
                 ),
               ),
-      
+
               // Update Task Button
               ElevatedButton(
                 onPressed: () {
@@ -238,9 +243,9 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
-                  Navigator.pop(context); // Return to previous page (TodoListPage)
+                  Navigator.pop(
+                      context); // Return to previous page (TodoListPage)
                 },
-
                 child: Text('Update Task'),
               ),
             ],

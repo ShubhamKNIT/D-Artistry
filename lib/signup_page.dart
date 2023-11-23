@@ -17,7 +17,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  
   // late is preferred over var
   // late keyword is used to denote a variable that will be assigned a value later
   // and it will not be null
@@ -68,35 +67,46 @@ class _SignUpPageState extends State<SignUpPage> {
     if (picked != null && picked != DateTime.now()) {
       setState(() {
         // reverse the date format to dd/mm/yyyy
-        _dateOfBirthController.text = picked.toString().substring(8, 10) + "/" + picked.toString().substring(5, 7) + "/" + picked.toString().substring(0, 4);
+        _dateOfBirthController.text = picked.toString().substring(8, 10) +
+            "/" +
+            picked.toString().substring(5, 7) +
+            "/" +
+            picked.toString().substring(0, 4);
       });
     }
   }
 
-
   Future<void> _handleSignUp() async {
-    try { 
-
-      setState(() { // show loading indicator // it starts after clicking signup button
-        _isLoading = true; 
-      });
+    try {
+      setState(
+        () {
+          // show loading indicator // it starts after clicking signup button
+          _isLoading = true;
+        },
+      );
 
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
-      if (_name.text == "" || _email.text == "" || _password.text == "" || _confirmPassword.text == "") {
-      // check any of the required fields are empty
-        showErrorDialog(context, "Please make sure to enter all the required fields." , "Try Again", 'OK', 'Cancel');
-      } 
-      else {
+      if (_name.text == "" ||
+          _email.text == "" ||
+          _password.text == "" ||
+          _confirmPassword.text == "") {
+        // check any of the required fields are empty
+        showErrorDialog(
+            context,
+            "Please make sure to enter all the required fields.",
+            "Try Again",
+            'OK',
+            'Cancel');
+      } else {
         // Attempt to create a user
-        final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _email.text, 
+        final userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _email.text,
           password: _password.text,
         );
-
-
 
         // using scaffoldmessanger to show successful signup message to user
         ScaffoldMessenger.of(context).showSnackBar(
@@ -107,25 +117,30 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         );
 
-
-        await Future.delayed(Duration(seconds: 2)); // delays navigation to login page by 5 seconds
+        await Future.delayed(Duration(
+            seconds: 2)); // delays navigation to login page by 5 seconds
         // holding page to display successful signup message to user
 
         // Navigate to verify email page
         if (userCredential.user != null) {
-
           // start of firestore data collection
           String uid = userCredential.user!.uid;
 
           // users/doc/user_details/doc
-          DocumentReference userDetailsRef = FirebaseFirestore.instance.collection('users').doc(uid).collection('user_details').doc();
+          DocumentReference userDetailsRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .collection('user_details')
+              .doc();
 
           // Store user details in the 'user_details' document
-          await userDetailsRef.set({
-            'name': _name.text,
-            'dateOfBirth': _dateOfBirthController.text,
-            'email': _email.text,
-          });
+          await userDetailsRef.set(
+            {
+              'name': _name.text,
+              'dateOfBirth': _dateOfBirthController.text,
+              'email': _email.text,
+            },
+          );
           // end of firestore data collection
 
           Navigator.push(
@@ -136,7 +151,8 @@ class _SignUpPageState extends State<SignUpPage> {
           );
         } else {
           // show error dialog
-          showErrorDialog(context, "Sign Up Failed. Please try again.", "Try Again", 'OK', 'Cancel');
+          showErrorDialog(context, "Sign Up Failed. Please try again.",
+              "Try Again", 'OK', 'Cancel');
         }
 
         if (kDebugMode) {
@@ -148,7 +164,8 @@ class _SignUpPageState extends State<SignUpPage> {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('User already exists'),
-          content: const Text('Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
+          content: const Text(
+              'Please go back to sign in page. Try sign in using login credentials associated with email. Go back to sign in page.'),
           actions: <Widget>[
             Row(
               textDirection: TextDirection.rtl,
@@ -163,10 +180,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     );
                   },
                   child: const Text('Sign In'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                  ),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Cancel'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                  ),
                 ),
               ],
             ),
@@ -174,9 +197,11 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       );
     } finally {
-      setState(() {
-        _isLoading = false; // hide loading indicator
-      });
+      setState(
+        () {
+          _isLoading = false; // hide loading indicator
+        },
+      );
     }
   }
 
@@ -198,23 +223,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
 
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                
+
                 // name container
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _name,
-                    keyboardType: TextInputType.name, // @symbol for email in keyboard
+                    keyboardType:
+                        TextInputType.name, // @symbol for email in keyboard
                     validator: (value) {
                       if (checkValidName(value!)) {
                         return null;
-                      }
-                      else {
+                      } else {
                         return 'Name must consist of only alphabets.';
                       }
                     },
@@ -222,19 +248,20 @@ class _SignUpPageState extends State<SignUpPage> {
                       hintText: 'Name',
                       icon: Icon(Icons.person),
                       border: InputBorder.none,
-                    )
+                    ),
                   ),
                 ),
-      
+
                 SizedBox(height: 10),
-      
+
                 // dob container
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
                   child: GestureDetector(
                     onTap: () {
                       _openDatePicker();
@@ -248,8 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         validator: (value) {
                           if (checkValidDOB(value!)) {
                             return null;
-                          }
-                          else {
+                          } else {
                             return 'User must be 7 years or older.';
                           }
                         },
@@ -262,25 +288,26 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-      
+
                 SizedBox(height: 10),
-      
+
                 // email container
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _email,
-                    keyboardType: TextInputType.emailAddress, // @symbol for email in keyboard
+                    keyboardType: TextInputType
+                        .emailAddress, // @symbol for email in keyboard
                     validator: (value) {
                       if (checkValidEmail(value!)) {
                         return null;
-                      }
-                      else {
+                      } else {
                         return 'Please enter a valid email address';
                       }
                     },
@@ -288,30 +315,31 @@ class _SignUpPageState extends State<SignUpPage> {
                       hintText: 'Email',
                       icon: Icon(Icons.email),
                       border: InputBorder.none,
-                    )
+                    ),
                   ),
                 ),
-      
+
                 SizedBox(height: 10),
-      
+
                 // password container
-                Container( 
+                Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _password,
-                    obscureText: !_isPasswordVisible, // hide the password (we can also use obscureText: true, but visibilty does not change)
+                    obscureText:
+                        !_isPasswordVisible, // hide the password (we can also use obscureText: true, but visibilty does not change)
                     enableSuggestions: false, // disable suggestions
                     autocorrect: false, // disable autocorrect
                     validator: (value) {
                       if (checkValidPassword(value!)) {
                         return null;
-                      }
-                      else {
+                      } else {
                         return '[a-z] [A-Z] [0-9] [!@#\$&*~] must be present in password.';
                       }
                     },
@@ -321,7 +349,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       border: InputBorder.none,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
                           setState(() {
@@ -329,19 +359,20 @@ class _SignUpPageState extends State<SignUpPage> {
                           });
                         },
                       ),
-                    )
+                    ),
                   ),
                 ),
-      
+
                 SizedBox(height: 10),
-      
+
                 // confirm password container
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _confirmPassword,
@@ -359,22 +390,27 @@ class _SignUpPageState extends State<SignUpPage> {
                       icon: Icon(Icons.lock),
                       hintText: 'Confirm Password',
                       border: InputBorder.none,
-                      suffixIcon: IconButton( // change visibility of password
+                      suffixIcon: IconButton(
+                        // change visibility of password
                         icon: Icon(
-                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
+                          setState(
+                            () {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            },
+                          );
                         },
                       ),
                     ),
                   ),
                 ),
-               
+
                 SizedBox(height: 16),
-               
+
                 // Sign Up Cancel Buttons
                 Row(
                   textDirection: TextDirection.rtl,
@@ -384,6 +420,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         _handleSignUp();
                       },
                       child: const Text('Sign Up'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                     SizedBox(width: 10),
                     ElevatedButton(
@@ -396,17 +436,20 @@ class _SignUpPageState extends State<SignUpPage> {
                         );
                       },
                       child: const Text('Cancel'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                   ],
                 ),
                 SizedBox(height: 16),
-                if (_isLoading)
-                  const CircularProgressIndicator(),
+                if (_isLoading) const CircularProgressIndicator(),
               ],
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }
