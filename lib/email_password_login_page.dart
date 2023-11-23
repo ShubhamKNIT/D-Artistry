@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:space_lab_tasks/first_page.dart';
 import 'package:space_lab_tasks/auth_test.dart';
+import 'package:space_lab_tasks/forgot_password.dart';
 import 'package:space_lab_tasks/theme_manager.dart';
 import 'package:space_lab_tasks/verify_email.dart';
 
@@ -223,6 +224,22 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                         foregroundColor: Colors.white,
                       ),
                     ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                  GestureDetector(
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      )
+                    ),
+                    onTap:() => Navigator.pushReplacement(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => ForgotPassword()
+                      )
+                    )
+                  )
                   ],
                 ),
                 if (_isLoading) // if loading show circular progress indicator

@@ -7,6 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:space_lab_tasks/email_password_login_page.dart';
 import 'package:space_lab_tasks/signup_page.dart';
 import 'package:space_lab_tasks/theme_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class FirstPage extends StatelessWidget {
   FirstPage({super.key});
@@ -51,31 +53,31 @@ class FirstPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // Brief Introduction
-                const Text(
-                  'Welcome to My To-Do App!\n'
-                  'Stay organized and productive with these features:',
-                  style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
+
+                Container(
+                  margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/to-do-list.png',
+                        height: 150,
+                        width: 150,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                      Text(
+                        'Space Lab Tasks!',
+                        style: GoogleFonts.gluten(
+                          textStyle: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                    ]
+                  ),
                 ),
-      
-                const SizedBox(height: 16),
-      
-                const Text(
-                    '1. Store notes and tasks with titles and descriptions.'),
-                const Text('2. Schedule reminders for your tasks and notes.'),
-                const Text('3. Categorize and color-code your notes.'),
-                const Text('4. Add images and drawings to your notes.'),
-                const Text('5. Arrange tasks in various orders.'),
-                const Text('6. Collaborate with private notes.'),
-                const Text(
-                    '7. Automatically detect and set reminders in your notes.'),
-                const SizedBox(height: 16),
-      
-                const Text(
-                  'Get started with your To-Do App:',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 32),
       
                 // Email/Password Sign-In Button
                 Row(
