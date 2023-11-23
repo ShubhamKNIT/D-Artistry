@@ -16,21 +16,21 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-
   // get instance of FirestoreTodoCRUD class
   final FirestoreTodoCRUD firestoreTodoCRUD = FirestoreTodoCRUD();
 
-
-  TextEditingController taskNameController = TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
-  DateTime dueDate = DateTime.now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
-  TimeOfDay reminderTime = TimeOfDay.now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
+  TextEditingController taskNameController =
+      TextEditingController(); // https://api.flutter.dev/flutter/widgets/TextEditingController-class.html
+  DateTime dueDate = DateTime
+      .now(); // https://api.flutter.dev/flutter/dart-core/DateTime-class.html
+  TimeOfDay reminderTime = TimeOfDay
+      .now(); // https://api.flutter.dev/flutter/material/TimeOfDay-class.html
   bool isImportant = false;
   String note = '';
   Color taskColor = Colors.blue; // Default color and will be changed by user
   File? imageFile;
   File? audioFile;
   String? docID;
-
 
   @override
   void initState() {
@@ -67,16 +67,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   // update task
 
-
-
   // Select image from gallery
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path); // store image file uri
-      });
+      setState(
+        () {
+          imageFile = File(pickedFile.path); // store image file uri
+        },
+      );
     }
   }
 
@@ -88,9 +88,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
 
     if (result != null) {
-      setState(() {
-        audioFile = File(result.files.single.path!); // store audio file uri
-      });
+      setState(
+        () {
+          audioFile = File(result.files.single.path!); // store audio file uri
+        },
+      );
     }
   }
 
@@ -105,7 +107,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-
               SizedBox(height: 16.0),
               // Task Name
               TextField(
@@ -115,7 +116,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   border: OutlineInputBorder(),
                 ),
               ),
-        
+
               // Due Date
               ListTile(
                 title: Text('Due Date: ${dueDate.toLocal()}'),
@@ -137,7 +138,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   }
                 },
               ),
-        
+
               // Reminder Time
               ListTile(
                 title: Text('Reminder Time: ${reminderTime.format(context)}'),
@@ -157,7 +158,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   }
                 },
               ),
-        
+
               // Note
               TextField(
                 decoration: InputDecoration(
@@ -165,25 +166,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
-                  setState(() {
-                    note = value;
-                  });
+                  setState(
+                    () {
+                      note = value;
+                    },
+                  );
                 },
               ),
-        
+
               // Is Important
               ListTile(
                 title: const Text('Mark as Important'),
                 trailing: Checkbox(
                   value: isImportant,
                   onChanged: (value) {
-                    setState(() {
-                      isImportant = value!;
-                    });
+                    setState(
+                      () {
+                        isImportant = value!;
+                      },
+                    );
                   },
                 ),
               ),
-        
+
               // Task Color
               ListTile(
                 title: const Text('Select Task Color'),
@@ -222,8 +227,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   );
                 },
               ),
-        
-        
+
               // attach image
               ListTile(
                 title: Text('Attach Image'),
@@ -232,7 +236,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   onPressed: _pickImage,
                 ),
               ),
-              
+
               // attach audio
               ListTile(
                 title: Text('Attach Audio'),
@@ -241,12 +245,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   onPressed: _pickAudio,
                 ),
               ),
-        
+
               // Add Task Button
               ElevatedButton(
                 onPressed: () {
                   if (widget.task == null) {
-                    addTask();  
+                    addTask();
                     // add task to firestore
                     firestoreTodoCRUD.addTask(
                       false,
@@ -267,9 +271,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
-                    Future.delayed(Duration(seconds: 2), () {
-                      taskNameController.clear();
-                    });
+                    Future.delayed(
+                      Duration(seconds: 2),
+                      () {
+                        taskNameController.clear();
+                      },
+                    );
                   }
                 },
                 child: Text('Add Task'),

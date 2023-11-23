@@ -29,9 +29,9 @@ class FirstPage extends StatelessWidget {
       final User? user = authResult.user;
       return user;
     } catch (error) {
-        if (kDebugMode) {
-          print(error);
-        } 
+      if (kDebugMode) {
+        print(error);
+      }
       return null;
     }
   }
@@ -54,7 +54,7 @@ class FirstPage extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              
+
               const Text(
                   '1. Store notes and tasks with titles and descriptions.'),
               const Text('2. Schedule reminders for your tasks and notes.'),
@@ -65,7 +65,7 @@ class FirstPage extends StatelessWidget {
               const Text(
                   '7. Automatically detect and set reminders in your notes.'),
               const SizedBox(height: 16),
-  
+
               const Text(
                 'Get started with your To-Do App:',
                 style: TextStyle(fontSize: 16),
@@ -86,8 +86,12 @@ class FirstPage extends StatelessWidget {
                       );
                     },
                     child: const Text('Sign In'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
- 
+
                   // Sign-Up Button
                   ElevatedButton(
                     onPressed: () {
@@ -100,6 +104,10 @@ class FirstPage extends StatelessWidget {
                       );
                     },
                     child: const Text('Sign Up'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -116,7 +124,7 @@ class FirstPage extends StatelessWidget {
                   if (user != null) {
                     // Navigate to the next screen after successful login.
 
-                    // ignore: use_build_context_synchronously 
+                    // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -126,6 +134,10 @@ class FirstPage extends StatelessWidget {
                   }
                 },
                 child: const Text('Sign in with Google'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ),
@@ -134,4 +146,3 @@ class FirstPage extends StatelessWidget {
     );
   }
 }
-

@@ -15,7 +15,9 @@ void main() async {
   // Check if a user is already authenticated
   User? user = FirebaseAuth.instance.currentUser;
 
-  runApp(MaterialApp(
-    home: user != null ? const DashboardPage() : FirstPage(),
-  ));
+  runApp(
+    MaterialApp(
+      home: user != null ? const DashboardPage() : FirstPage(),
+    ),
+  );
 }

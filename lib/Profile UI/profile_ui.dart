@@ -48,14 +48,14 @@ class _ProfileUIState extends State<ProfileUI> {
           _isLoading = false;
         });
       }
-
     }
   }
 
   // Function to update user details
-  Future<void> updateUserDetails(String userId, Map<String, dynamic> userData) async {
+  Future<void> updateUserDetails(
+      String userId, Map<String, dynamic> userData) async {
     String? docId = await _firestoreService.getDocumentIdForUserDetails(userId);
-    
+
     if (docId != null) {
       try {
         Map<String, dynamic> updatedUserData = {
@@ -75,8 +75,6 @@ class _ProfileUIState extends State<ProfileUI> {
     }
   }
 
-
-
   // Function to update user name
   void updateUserName(String newName) {
     setState(() {
@@ -87,17 +85,21 @@ class _ProfileUIState extends State<ProfileUI> {
 
   // Function to update user email
   void updateEmail(String newEmail) {
-    setState(() {
-      _userData['email'] = newEmail;
-    });
+    setState(
+      () {
+        _userData['email'] = newEmail;
+      },
+    );
     // updateUserDetails(_user!.uid, _userData);
   }
 
   // Function to update user date of birth
   void updateDOB(String newDOB) {
-    setState(() {
-      _userData['dateOfBirth'] = newDOB;
-    });
+    setState(
+      () {
+        _userData['dateOfBirth'] = newDOB;
+      },
+    );
     // updateUserDetails(_user!.uid, _userData);
   }
 
@@ -116,7 +118,7 @@ class _ProfileUIState extends State<ProfileUI> {
         //         initialDOB: _userData['dateOfBirth'],
         //         onNameUpdated: updateUserName,
         //         onEmailUpdated: updateEmail,
-        //         onDOBUpdated: updateDOB, onSave: () async { 
+        //         onDOBUpdated: updateDOB, onSave: () async {
         //           // Update Firestore data
         //             String userId = _user!.uid;
         //             String? docId = await _firestoreService.getDocumentIdForUserDetails(userId);
@@ -147,86 +149,96 @@ class _ProfileUIState extends State<ProfileUI> {
         // ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
         body: _isLoading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Column(
-            children: [
-              // Profile Picture and Name Section
-              Container(
-                height: MediaQuery.of(context).size.height / 5,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50, // Set your desired radius
-                      // Replace the backgroundImage with your profile picture
-                      backgroundImage:
-                          NetworkImage('https://via.placeholder.com/150'),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-
-              // Profile Details Section
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // lets make a function to build the profile details
-                    // i do not want to use _userData 
-                    // i want to directly fetch user email from firebase
-                    _buildProfileDetail('Username', _userData['name']),
-                    _buildProfileDetail('email', email!),
-                    _buildProfileDetail('Date of Birth', _userData['dateOfBirth']),
-
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  // Profile Picture and Name Section
+                  Container(
+                    height: MediaQuery.of(context).size.height / 5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Delete account from the firestore
-                          },
-                          child: Text('Delete Account'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                          ),
+                        CircleAvatar(
+                          radius: 50, // Set your desired radius
+                          // Replace the backgroundImage with your profile picture
+                          backgroundImage:
+                              NetworkImage('https://via.placeholder.com/150'),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            navigateSecondPage(
-                              ChangeProfileInfo(
-                                initialName: _userData['name'],
-                                initialEmail: email,
-                                initialDOB: _userData['dateOfBirth'],
-                                onNameUpdated: updateUserName,
-                                onEmailUpdated: updateEmail,
-                                onDOBUpdated: updateDOB,
-                                onSave: () async {
-                                  await updateUserDetails(_user!.uid, {
-                                    'name': _userData['name'],
-                                    'email': _userData['email'],
-                                    'dateOfBirth': _userData['dateOfBirth'],
-                                  });
-                                  // _fetchUserData(); // Refresh the displayed data after updating
-                                  Navigator.pop(context); // Go back to the profile page
-                                },
-                              ),
-                            );
-                          },
-                          child: Text('Edit Profile'),
-                        ),
-
+                        SizedBox(height: 10),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+
+                  // Profile Details Section
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // lets make a function to build the profile details
+                        // i do not want to use _userData
+                        // i want to directly fetch user email from firebase
+                        _buildProfileDetail('Username', _userData['name']),
+                        _buildProfileDetail('email', email!),
+                        _buildProfileDetail(
+                            'Date of Birth', _userData['dateOfBirth']),
+
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // Delete account from the firestore
+                              },
+                              child: Text('Delete Account'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                navigateSecondPage(
+                                  ChangeProfileInfo(
+                                    initialName: _userData['name'],
+                                    initialEmail: email,
+                                    initialDOB: _userData['dateOfBirth'],
+                                    onNameUpdated: updateUserName,
+                                    onEmailUpdated: updateEmail,
+                                    onDOBUpdated: updateDOB,
+                                    onSave: () async {
+                                      await updateUserDetails(
+                                        _user!.uid,
+                                        {
+                                          'name': _userData['name'],
+                                          'email': _userData['email'],
+                                          'dateOfBirth':
+                                              _userData['dateOfBirth'],
+                                        },
+                                      );
+                                      // _fetchUserData(); // Refresh the displayed data after updating
+                                      Navigator.pop(
+                                          context); // Go back to the profile page
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text('Edit Profile'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
       ),
       onRefresh: () => Future.delayed(
         Duration(seconds: 1),

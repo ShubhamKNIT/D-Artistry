@@ -17,8 +17,8 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false; // to change password visibility
-  bool _isLoading = false;  // to show loading indicator
-  bool _isEmailVerified = false;  // to check if email is verified
+  bool _isLoading = false; // to show loading indicator
+  bool _isEmailVerified = false; // to check if email is verified
 
   @override
   void initState() {
@@ -44,9 +44,11 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
 
   Future<void> _handleEmailSignIn() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(
+        () {
+          _isLoading = true;
+        },
+      );
 
       final String email = _emailController.text;
       final String password = _passwordController.text;
@@ -96,19 +98,25 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Login Error'),
-          content: const Text('Invalid login credentials. Please try again with valid login credentials.'),
+          content: const Text(
+              'Invalid login credentials. Please try again with valid login credentials.'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('OK'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
             ),
           ],
         ),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(
+        () {
+          _isLoading = false;
+        },
+      );
     }
   }
 
@@ -125,9 +133,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                 'Welcome back! Sign in with your email and password.',
                 style: TextStyle(fontSize: 15),
               ),
-
               SizedBox(height: 25),
-
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -135,13 +141,13 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextFormField(
+                  enableSuggestions: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _emailController,
                   validator: (value) {
                     if (checkValidEmail(value!)) {
                       return null;
-                    }
-                    else {
+                    } else {
                       return 'Please enter a valid email address';
                     }
                   },
@@ -152,9 +158,7 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                   ),
                 ),
               ),
-
               SizedBox(height: 16),
-
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -170,21 +174,23 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                     icon: Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
+                        setState(
+                          () {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          },
+                        );
                       },
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
                 ),
               ),
-
               const SizedBox(height: 16),
-              
               Row(
                 textDirection: TextDirection.rtl,
                 children: [
@@ -193,18 +199,22 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
                       _handleEmailSignIn();
                     },
                     child: const Text('Sign In'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(
-                          builder: (context) => FirstPage()
-                        )
-                      );
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => FirstPage()));
                     },
                     child: const Text('Cancel'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -217,4 +227,3 @@ class EmailPasswordLoginPageState extends State<EmailPasswordLoginPage> {
     );
   }
 }
-  

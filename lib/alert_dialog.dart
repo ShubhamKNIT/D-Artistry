@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 Future<void> showErrorDialog(
-  
-  BuildContext context, 
-  String text,  // content
+  BuildContext context,
+  String text, // content
   String errorType, // title
   String opt_1, // button 1
   String opt_2, // button 2
 ) {
-    return showDialog(context: context, builder: (context) {
+  return showDialog(
+    context: context,
+    builder: (context) {
       return AlertDialog(
         title: Text(errorType),
         content: Text(text),
@@ -28,6 +29,7 @@ Future<void> showErrorDialog(
             ],
           ),
         ],
-      );  
-    });
-  }
+      );
+    },
+  );
+}
