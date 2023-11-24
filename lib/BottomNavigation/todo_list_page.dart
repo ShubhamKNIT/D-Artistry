@@ -51,6 +51,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   // String? imageUri = task['image'];
                   // String? audioUri = task['audio'];
 
+                  // task container
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
@@ -58,12 +59,12 @@ class _TodoListPageState extends State<TodoListPage> {
                       shape: BoxShape.rectangle,
                       border: Border.all(
                         color: Colors.grey.shade500,
-                        width: 0.1,
+                        width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
                       boxShadow: [
                         BoxShadow(
-                          blurRadius: 0.5,
+                          blurRadius: 0.4,
                           color: Colors.grey.shade500,
                           offset: Offset(0.2, 0.4),
                           blurStyle: BlurStyle.normal,
@@ -75,7 +76,15 @@ class _TodoListPageState extends State<TodoListPage> {
                           : null,
                     ),
                     child: ExpansionTile(
-                      // collapsedIconColor: Color.lerp(Colors.amber, Colors.amberAccent, Colors.amberAccent.computeLuminance()),
+                      shape: ShapeBorder.lerp(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        1,
+                      ),
                       title: Text(
                         title,
                         style: const TextStyle(
@@ -85,7 +94,7 @@ class _TodoListPageState extends State<TodoListPage> {
                         ),
                       ),
                       subtitle: Text(
-                        'Due: ${dueDate.month}/${dueDate.day}/${dueDate.year} at ${reminderTime.hour}:${reminderTime.minute}',
+                        'Due: ${dueDate.day}/${dueDate.month}/${dueDate.year} at ${reminderTime.hour}:${reminderTime.minute}',
                         style: const TextStyle(
                             fontSize: 15.0, color: Colors.white),
                       ),
