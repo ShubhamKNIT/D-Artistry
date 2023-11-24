@@ -123,7 +123,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
                 // Due Date
                 ListTile(
-                  title: Text('Due Date: ${dueDate.toLocal()}'),
+                  title: Text('Due Date: ${dueDate.day}/${dueDate.month}/${dueDate.year}'),
                   trailing: const Icon(Icons.calendar_today),
                   onTap: () async {
                     final selectedDate = await showDatePicker(

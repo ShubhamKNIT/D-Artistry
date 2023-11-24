@@ -275,7 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         absorbing: true,
                         child: TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
+                          readOnly: false,
                           controller: _dateOfBirthController,
                           validator: (value) {
                             if (checkValidDOB(value!)) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:space_lab_tasks/Firestore/delete_user.dart';
 import 'package:space_lab_tasks/Firestore/profile_page_crud.dart';
 import 'package:space_lab_tasks/forgot_password.dart';
 import 'edit_profile.dart';
@@ -179,48 +178,45 @@ class _ProfileUIState extends State<ProfileUI> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // lets make a function to build the profile details
-                        // i do not want to use _userData
-                        // i want to directly fetch user email from firebase
+                        // user profile details
                         _buildProfileDetail('Username', _userData['name']),
                         _buildProfileDetail('email', email!),
                         _buildProfileDetail(
                             'Date of Birth', _userData['dateOfBirth']),
 
                         SizedBox(height: MediaQuery.of(context).size.height / 20),
-                        GestureDetector(
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            )
-                          ),
-                          onTap:() => Navigator.push(
-                            context, 
-                            MaterialPageRoute(
-                              builder: (context) => ForgotPassword()
-                            )
-                          )
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height / 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                // Delete account from the firestore
-                                Navigator.push(context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => DeleteAccountAndData()
-                                  )
-                                );
-                              },
-                              child: Text('Delete Account'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
+                            // ElevatedButton(
+                            //   onPressed: () {
+                            //     // // Delete account from the firestore
+                            //     // Navigator.push(context, 
+                            //     //   MaterialPageRoute(
+                            //     //     builder: (context) => DeleteAccountAndData()
+                            //     //   )
+                            //     // );
+                            //   },
+                            //   child: Text('Delete Account'),
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: Colors.red,
+                            //     foregroundColor: Colors.white,
+                            //   ),
+                            // ),
+                            GestureDetector(
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                )
                               ),
+                              onTap:() => Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()
+                                )
+                              )
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -238,8 +234,7 @@ class _ProfileUIState extends State<ProfileUI> {
                                         {
                                           'name': _userData['name'],
                                           'email': _userData['email'],
-                                          'dateOfBirth':
-                                              _userData['dateOfBirth'],
+                                          'dateOfBirth': _userData['dateOfBirth'],
                                         },
                                       );
                                       // _fetchUserData(); // Refresh the displayed data after updating

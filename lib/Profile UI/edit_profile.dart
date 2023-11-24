@@ -91,6 +91,26 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
     widget.onDOBUpdated(dob);
   }
 
+  // Separate method to open the Date Picker
+  Future<void> _openDatePicker() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        // reverse the date format to dd/mm/yyyy
+        dobController.text = picked.toString().substring(8, 10) +
+            "/" +
+            picked.toString().substring(5, 7) +
+            "/" +
+            picked.toString().substring(0, 4);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context);
@@ -103,88 +123,92 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
         body: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.only(left: 40, right: 40),
-            // padding: const EdgeInsets.all(40),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // Add Profile Picture Update section
       
                 // Other details update section
-                Padding(
-                  padding: EdgeInsets.only(top: 40),
-                  child: SizedBox(
-                    height: 50,
-                    width: 320,
-                    child: TextFormField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Name',
-                      ),
-                      validator: (value) {
-                        if (checkValidName(nameController.text) == false) {
-                          return 'Please enter a valid name';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onSaved: (value) {
-                        updateName(value!);
-                      },
+                Flexible(
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
                     ),
+                    validator: (value) {
+                      if (!checkValidName(nameController.text)) {
+                        return 'Please enter a valid name';
+                      } else {
+                        return null;
+                      }
+                    },
+                    onSaved: (value) {
+                      updateName(value!);
+                    },
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    height: 50,
-                    width: 320,
-                    child: TextFormField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Email',
-                      ),
-                      validator: (value) {
-                        if (checkValidEmail(emailController.text) == false) {
-                          return 'Please enter a valid email';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onSaved: (value) {
-                        updateEmail(value!);
-                      },
+                
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
+
+                Flexible(
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
                     ),
+                    validator: (value) {
+                      if (!checkValidEmail(emailController.text)) {
+                        return 'Please enter a valid email';
+                      } else {
+                        return null;
+                      }
+                    },
+                    onSaved: (value) {
+                      updateEmail(value!);
+                    },
                   ),
                 ),
       
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    height: 50,
-                    width: 320,
-                    child: TextFormField(
-                      controller: dobController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Date of Birth',
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
+
+                Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                    child: GestureDetector(
+                      onTap: () {
+                        _openDatePicker();
+                      },
+                      child: AbsorbPointer(
+                        absorbing: true,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: false,
+                          controller: dobController,
+                          validator: (value) {
+                            if (checkValidDOB(value!)) {
+                              return null;
+                            } else {
+                              return 'User must be 7 years or older.';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Date of Birth',
+                            icon: Icon(Icons.calendar_today),
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
-                      validator: (value) {
-                        if (checkValidDOB(dobController.text) == false) {
-                          return 'Please enter a valid date of birth';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onSaved: (value) {
-                        updateDOB(value!);
-                      },
                     ),
                   ),
-                ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
                 // Padding(
                 //   padding: EdgeInsets.only(top: 10),
                 //   child: SizedBox(
@@ -237,8 +261,8 @@ class _ChangeProfileInfoState extends State<ChangeProfileInfo> {
                 Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: SizedBox(
-                    width: 320,
-                    height: 50,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: ElevatedButton(
                       onPressed: updateUserDetailsAndGoBack,
                       child: const Text('Submit'),
